@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1820930831040406}
+  m_IsPrefabParent: 1
+--- !u!1 &1820930831040406
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4526360190249464}
+  - component: {fileID: 114286881656911042}
+  - component: {fileID: 114932519784436524}
+  m_Layer: 0
+  m_Name: Arduino
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4526360190249464
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1820930831040406}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.822525, y: -0.8056724, z: -2.15625}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114286881656911042
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1820930831040406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3087a2091a316a4d85abc8584dcd00b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PortName: COM6
+  BaudRate: 115200
+  StartFlag: 35
+  PollingRate: 100
+  PackagesLost: 0
+  readTimeouts: 0
+  ParseIncomingData: 1
+  NewestIncomingData: 
+  NewestOutgoingData: 
+  ArduinoMillis: 0
+  RawEDA: 0
+  IBI: 0
+  RawPulse: 0
+  rawPressure: 0
+  testStart: 0
+--- !u!114 &114932519784436524
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1820930831040406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 670d7dd8b3dbbc048b6b604a8447fa1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FileName: Arduino Log
+  FileFormat: .tsv
+  path: 
+  header: "UnityMillis\tArduinoMillis\tEDA\tIBI\tDistance"
+  MatchFittsLawLogging: 1
+  AltHeader: Date;Time;ArduinoMillis;EDA;IBI;RawPulse;Pressure;TestStart
+  AltFileFormat: .csv

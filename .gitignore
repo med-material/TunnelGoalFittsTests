@@ -5,6 +5,8 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /.vscode/
+/.vs/
+/[Dd]ata/
 /Assets/AssetStoreTools*
 /Assets/Text/securityCode.txt
 /Assets/Text/securityCode.txt.meta
