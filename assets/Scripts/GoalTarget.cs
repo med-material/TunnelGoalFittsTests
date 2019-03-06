@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GoalTarget : Target {
 
@@ -18,6 +19,13 @@ public class GoalTarget : Target {
 
 	private Vector3 feedbackVector;
     private bool newHit = false;
+
+	[SerializeField]
+	private Color activeColor;
+	[SerializeField]
+	private Color feedbackColor;
+
+
 
     void Awake() {
 
@@ -79,9 +87,9 @@ public class GoalTarget : Target {
 
     public new void SetActiveTarget()
     {
-        midSprite.color = Color.green;
-        topSprite.color = Color.green;
-        bottomSprite.color = Color.green;
+        midSprite.color = activeColor;
+        topSprite.color = activeColor;
+        bottomSprite.color = activeColor;
 
     }
 
@@ -101,8 +109,8 @@ public class GoalTarget : Target {
 		feedback = true;
 		hitTime = Time.time;
 
-		midSprite.color = Color.red;
-		topSprite.color = Color.red;
-		bottomSprite.color = Color.red;
+		midSprite.color = feedbackColor;
+		topSprite.color = feedbackColor;
+		bottomSprite.color = feedbackColor;
 	}
 }
