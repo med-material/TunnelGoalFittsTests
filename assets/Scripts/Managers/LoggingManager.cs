@@ -3,6 +3,9 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using System.Collections;
 using System.IO;
+using UnityEngine.UI;
+using System;
+using System.Linq;
 
 public enum InputResponders
 {
@@ -65,7 +68,21 @@ public class LoggingManager : MonoBehaviour {
 	private static string date;
 	private static string time;
 
+	// UI
+	[SerializeField]
+	private Dropdown inputResponderDropdown;
+
+	[SerializeField]
+	private Dropdown inputTypeDropdown;
+
+	[SerializeField]
+	private InputField emailField;
 	public void Awake() {
+		var optionsList = Enum.GetNames(typeof(InputResponders)).ToList();
+		inputResponderDropdown.AddOptions(optionsList);
+
+		var inputTypeList = Enum.GetNames(typeof(InputType)).ToList();
+		inputTypeDropdown.AddOptions(inputTypeList);
 
 		if (instance == null)
 			instance = this;
@@ -91,6 +108,10 @@ public class LoggingManager : MonoBehaviour {
 		_userID	= userID;
 		_inputType	= inputType;
 		_inputResponders = inputResponders;
+	}
+
+	public void emailField_Changed() {
+		_userID = emailField.text;
 	}
 
 	public static void NewEntry(GameType _gameType, string _hitType, 

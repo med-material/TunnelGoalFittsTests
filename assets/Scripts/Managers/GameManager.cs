@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.IO;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 //public enum GameType {Bullseye, Line, Fitts, Tunnel, Goal };
 public enum GameType
@@ -86,6 +88,24 @@ public class GameManager : MonoBehaviour
     private static Vector3 diameterVector;
 
     private static bool backtracking = false;
+    
+    // UI
+    [SerializeField]
+    private Slider sizeSlider;
+    [SerializeField]
+    private Text sizeNumber;
+
+    [SerializeField]
+    private Slider distanceSlider;
+    [SerializeField]
+    private Text distanceNumber;
+    [SerializeField]
+    private Text roundsNumber;
+    [SerializeField]
+    private Slider roundsSlider;
+
+    [SerializeField]
+    private GameObject uicanvas;
 
     void Awake()
     {
@@ -134,9 +154,16 @@ public class GameManager : MonoBehaviour
         //	TunnelManager.PrepareTunnel ();
         //}
 
-        startButton = GameObject.Find("StartButton").GetComponent<StartButton>();
+        //startButton = GameObject.Find("StartButton").GetComponent<StartButton>();
         LoadAutomateJSON();
-
+        S_tunnel = (int) sizeSlider.value;
+        S_goal = (int) sizeSlider.value;
+        S_fitts = (int) sizeSlider.value;
+        D_fitts = (int) distanceSlider.value;
+        D_goal = (int) distanceSlider.value;
+        D_tunnel = (int) distanceSlider.value;
+        rounds = (int) roundsSlider.value;
+        PrepareGoalGame();
     }
 
     void Update()
@@ -151,6 +178,63 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void gameTypeToggleTunnel() {
+        if (allTargetObjects != null && allTargetObjects.Length > 0) {
+            EndGame();
+        }
+        gameType = GameType.Tunnel;
+        PrepareTunnelGame();
+    }
+
+    public void gameTypeToggleFitts() {
+        if (allTargetObjects != null && allTargetObjects.Length > 0) {
+            EndGame();
+        }
+        gameType = GameType.Fitts;
+        PrepareFittsGame();
+    }
+
+    public void gameTypeToggleGoal() {
+        if (allTargetObjects != null && allTargetObjects.Length > 0) {
+            EndGame();
+        }
+        gameType = GameType.Goal;
+        PrepareGoalGame();
+    }
+
+    public void size_onSliderChanged() {
+        sizeNumber.text = ((int)sizeSlider.value).ToString();
+
+        if (gameType == GameType.Fitts) {
+            S_fitts = (int) sizeSlider.value;
+            PrepareFittsGame();
+        } else if (gameType == GameType.Goal) {
+            S_goal = (int) sizeSlider.value;
+            PrepareGoalGame();
+        } else if (gameType == GameType.Tunnel) {
+            S_tunnel = (int) sizeSlider.value;
+            PrepareTunnelGame();
+        }
+    }
+
+    public void distance_onSliderChanged() {
+        distanceNumber.text = ((int)distanceSlider.value).ToString();
+        if (gameType == GameType.Fitts) {
+            D_fitts = (int) distanceSlider.value;
+            PrepareFittsGame();
+        } else if (gameType == GameType.Goal) {
+            D_goal = (int) distanceSlider.value;
+            PrepareGoalGame();
+        } else if (gameType == GameType.Tunnel) {
+            D_tunnel = (int) distanceSlider.value;
+            PrepareTunnelGame();
+        }
+    }
+
+    public void rounds_onSliderChanged() {
+        roundsNumber.text = ((int)roundsSlider.value).ToString();
+        rounds = (int)roundsSlider.value;
+    }
     public static bool GetInGame()
     {
 
@@ -163,7 +247,7 @@ public class GameManager : MonoBehaviour
         return gameType;
     }
 
-    public static void StartGame()
+    public void StartGame()
     {
 
         if (gameType == GameType.Fitts)
@@ -176,7 +260,7 @@ public class GameManager : MonoBehaviour
         if (targetAttributes.Length > 0)
         {
             inGame = true;
-            startButton.Disappear();
+            //startButton.Disappear();
             LoggingManager.NewLog();
             startTime = Time.time;
             hitTime = Time.time;
@@ -210,11 +294,26 @@ public class GameManager : MonoBehaviour
     {
 
         inGame = false;
-        startButton.Appear();
+        //startButton.Appear();
         for (int i = 0; i < allTargetObjects.Length; i++)
         {
             Destroy(allTargetObjects[i]);
         }
+        if (allBarObjects != null && allBarObjects.Length > 0) {
+            for (int i = 0; i < allBarObjects.Length; i++) {
+                Destroy(allBarObjects[i]);
+            }
+        }
+        if (allTunnelTarget != null && allTunnelTarget.Length > 0) {
+            for (int i = 0; i < allTunnelTarget.Length; i++) {
+                Destroy(allTunnelTarget[i]);
+            }
+        }
+        allTunnelTarget = null;
+        allBarObjects = null;
+        allTargetObjects = null;
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
     }
 
     public static int GetCurrentTarget()
@@ -225,7 +324,6 @@ public class GameManager : MonoBehaviour
 
     public static void SuccesfulHit()
     {
-
         successSound.Play();
 
         MakeLogEntry("Hit");
@@ -250,17 +348,18 @@ public class GameManager : MonoBehaviour
                 EndGame();
             }
         }
-        if (gameType == GameType.Fitts)
-        {
-            allTargetObjects[currentTarget].GetComponent<FittsTarget>().SetActiveTarget();
-        }
-        else if (gameType == GameType.Goal)
-        {
-            allTargetObjects[currentTarget].GetComponent<GoalTarget>().SetActiveTarget();
-
-        }
-        else if (gameType == GameType.Tunnel){
-            allTargetObjects[currentTarget].GetComponent<TunnelTarget>().SetActiveTarget();
+        if (inGame) {
+            if (gameType == GameType.Fitts)
+            {
+                allTargetObjects[currentTarget].GetComponent<FittsTarget>().SetActiveTarget();
+            }
+            else if (gameType == GameType.Goal)
+            {
+                allTargetObjects[currentTarget].GetComponent<GoalTarget>().SetActiveTarget();
+            }
+            else if (gameType == GameType.Tunnel){
+                allTargetObjects[currentTarget].GetComponent<TunnelTarget>().SetActiveTarget();
+            }
         }
     }
 
@@ -388,22 +487,24 @@ public class GameManager : MonoBehaviour
         targetAttributes[1].w = 100;
 
         totalTargets = 2;
+        if (allTargetObjects == null) {
+            allFittsTarget = new FittsTarget[totalTargets];
+            allTargetObjects = new GameObject[totalTargets];
+            Debug.Log("Preparing Fitts Game");
 
-        allFittsTarget = new FittsTarget[totalTargets];
-        allTargetObjects = new GameObject[totalTargets];
-        Debug.Log("Preparing Fitts Game");
+            for (int i = 0; i < totalTargets; i++)
+            {
+                allTargetObjects[i] = Instantiate(Resources.Load("Prefabs/FittsTarget", typeof(GameObject)), new Vector2(targetAttributes[i].x, targetAttributes[i].y), Quaternion.identity) as GameObject;
 
-        for (int i = 0; i < totalTargets; i++)
-        {
-            allTargetObjects[i] = Instantiate(Resources.Load("Prefabs/FittsTarget", typeof(GameObject)), new Vector2(targetAttributes[i].x, targetAttributes[i].y), Quaternion.identity) as GameObject;
-
-            allFittsTarget[i] = allTargetObjects[i].GetComponent<FittsTarget>();
-            allFittsTarget[i].SetTargetID(i);
-
+                allFittsTarget[i] = allTargetObjects[i].GetComponent<FittsTarget>();
+                allFittsTarget[i].SetTargetID(i);
+            }
+            allTargetObjects[0].GetComponent<FittsTarget>().SetActiveTarget();
+        }
+        for (int i = 0; i < totalTargets; i++) {
+            allTargetObjects[i].transform.position = new Vector2(targetAttributes[i].x, targetAttributes[i].y);
             allFittsTarget[i].SetSize(S_fitts, 100);
         }
-        allTargetObjects[0].GetComponent<FittsTarget>().SetActiveTarget();
-
     }
 
     private static Bounds CameraBounds()
@@ -428,51 +529,43 @@ public class GameManager : MonoBehaviour
         targetAttributes[1].z = S_tunnel;
         targetAttributes[1].w = 100;
 
-        totalTargets = 2;
-
-        allTunnelTarget = new TunnelTarget[totalTargets];
-        allTargetObjects = new GameObject[totalTargets];
-        allTunnelBars = new TunnelBar[2];
-        allBarObjects = new GameObject[2];
-        Debug.Log("Preparing Tunnel Game");
-
         Bounds b = CameraBounds();
         float barPos = ((b.extents.y - (S_tunnel / 2))/2) + (S_tunnel / 2);
         float barHeight = (b.extents.y - (S_tunnel / 2));
-        allBarObjects[0] = Instantiate(Resources.Load("Prefabs/TunnelBar", typeof(GameObject)), new Vector2(0, barPos), Quaternion.identity) as GameObject;
-        allTunnelBars[0] = allBarObjects[0].GetComponent<TunnelBar>();
-        allTunnelBars[0].SetSize((int)b.extents.x*2, (int)barHeight);
 
-        allBarObjects[1] = Instantiate(Resources.Load("Prefabs/TunnelBar", typeof(GameObject)), new Vector2(0, -barPos), Quaternion.identity) as GameObject;
-        allTunnelBars[1] = allBarObjects[1].GetComponent<TunnelBar>();
+        if (allTargetObjects == null) {
+            totalTargets = 2;
+            allTunnelTarget = new TunnelTarget[totalTargets];
+            allTargetObjects = new GameObject[totalTargets];
+            allTunnelBars = new TunnelBar[2];
+            allBarObjects = new GameObject[2];
+            Debug.Log("Preparing Tunnel Game");
+
+            allBarObjects[0] = Instantiate(Resources.Load("Prefabs/TunnelBar", typeof(GameObject)), new Vector2(0, barPos), Quaternion.identity) as GameObject;
+            allTunnelBars[0] = allBarObjects[0].GetComponent<TunnelBar>();
+            allBarObjects[1] = Instantiate(Resources.Load("Prefabs/TunnelBar", typeof(GameObject)), new Vector2(0, -barPos), Quaternion.identity) as GameObject;
+            allTunnelBars[1] = allBarObjects[1].GetComponent<TunnelBar>();
+        }
+
+        allTunnelBars[0].SetSize((int)b.extents.x*2, (int)barHeight);
         allTunnelBars[1].SetSize((int)b.extents.x * 2, (int)barHeight);
 
-
-
-        //for (int i = 0; i < 2; i++)
-        //{
-        //    allTargetObjects[i] = Instantiate(Resources.Load("Prefabs/TunnelBar", typeof(GameObject)), new Vector2(0, S_tunnel / 2 - (S_tunnel * i)), Quaternion.identity) as GameObject;
-
-        //    allTunnelBars[i] = allTargetObjects[i].GetComponent<TunnelBar>();
-
-        //    allTunnelBars[i].SetSize(10, 1);
-        //    allTargetObjects[i] = null;
-        //    //allTunnelTarget[i].SetSize(5, S_tunnel);
-        //}
-
         Debug.Log("CamRect: " + CameraBounds());
+        Debug.Log("allTargetObjects  count: " + allTargetObjects.Length);
 
-        for (int i = 0; i < totalTargets; i++)
-        {
-            allTargetObjects[i] = Instantiate(Resources.Load("Prefabs/TunnelTarget", typeof(GameObject)), new Vector2(targetAttributes[i].x, targetAttributes[i].y), Quaternion.identity) as GameObject;
-
-            allTunnelTarget[i] = allTargetObjects[i].GetComponent<TunnelTarget>();
-            allTunnelTarget[i].SetTargetID(i);
-
+        if (allTargetObjects[0] == null) {
+            for (int i = 0; i < totalTargets; i++)
+            {
+                allTargetObjects[i] = Instantiate(Resources.Load("Prefabs/TunnelTarget", typeof(GameObject)), new Vector2(targetAttributes[i].x, targetAttributes[i].y), Quaternion.identity) as GameObject;
+                allTunnelTarget[i] = allTargetObjects[i].GetComponent<TunnelTarget>();
+                allTunnelTarget[i].SetTargetID(i);
+            }
+            allTargetObjects[0].GetComponent<TunnelTarget>().SetActiveTarget();
+        }
+        for (int i = 0; i < totalTargets; i++) {
+            allTargetObjects[i].transform.position = new Vector2(targetAttributes[i].x, targetAttributes[i].y);
             allTunnelTarget[i].SetSize(5, S_tunnel);
         }
-        allTargetObjects[0].GetComponent<TunnelTarget>().SetActiveTarget();
-
 
     }
 
@@ -484,27 +577,32 @@ public class GameManager : MonoBehaviour
         targetAttributes[0].z = 3;
         targetAttributes[0].w = S_goal;
 
-        targetAttributes[1].x = (D_fitts / 2);
+        targetAttributes[1].x = (D_goal / 2);
         targetAttributes[1].y = 0;
         targetAttributes[1].z = 3;
         targetAttributes[1].w = S_goal;
 
         totalTargets = 2;
 
-        allGoalTarget = new GoalTarget[totalTargets];
-        allTargetObjects = new GameObject[totalTargets];
-        Debug.Log("Preparing Goal Game");
+        if (allTargetObjects == null) {
+            allGoalTarget = new GoalTarget[totalTargets];
+            allTargetObjects = new GameObject[totalTargets];
+            Debug.Log("Preparing Goal Game");
 
+            for (int i = 0; i < totalTargets; i++)
+            {
+                allTargetObjects[i] = Instantiate(Resources.Load("Prefabs/GoalTarget", typeof(GameObject)), new Vector2(targetAttributes[i].x, targetAttributes[i].y), Quaternion.identity) as GameObject;
+
+                allGoalTarget[i] = allTargetObjects[i].GetComponent<GoalTarget>();
+                allGoalTarget[i].SetTargetID(i);
+            }
+            allTargetObjects[0].GetComponent<GoalTarget>().SetActiveTarget();
+        }
         for (int i = 0; i < totalTargets; i++)
         {
-            allTargetObjects[i] = Instantiate(Resources.Load("Prefabs/GoalTarget", typeof(GameObject)), new Vector2(targetAttributes[i].x, targetAttributes[i].y), Quaternion.identity) as GameObject;
-
-            allGoalTarget[i] = allTargetObjects[i].GetComponent<GoalTarget>();
-            allGoalTarget[i].SetTargetID(i);
-
+            allTargetObjects[i].transform.position = new Vector2(targetAttributes[i].x, targetAttributes[i].y);
             allGoalTarget[i].SetSize(10, S_goal);
         }
-        allTargetObjects[0].GetComponent<GoalTarget>().SetActiveTarget();
 
 
     }
