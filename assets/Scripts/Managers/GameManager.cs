@@ -142,14 +142,13 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 
-        if (inGame)
-        {
+        if (inGame) {
             InputManager.CheckInput();
             //if (TunnelManager.GetTunnelOn ())
             //	TunnelManager.CheckTunnel ();
-        }
-        else
+        } else {
             InputManager.CheckStart();
+        }
     }
 
     public static bool GetInGame()
