@@ -38,26 +38,6 @@ public class GoalTarget : Target {
 		bottomSprite = bottomLine.GetComponent<SpriteRenderer> ();
 	}
 
-
-    private void OnMouseEnter()
-    {
-        newHit = true;
-    }
-
-    private void OnMouseExit()
-    {
-        newHit = false;
-    }
-
-    public void DeactivateHit()
-    {
-        newHit = false;
-    }
-
-    public bool IsNewHit()
-    {
-        return newHit;
-    }
     void Update() {
         if (feedback) {
 

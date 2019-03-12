@@ -40,6 +40,7 @@ public class InputManager : MonoBehaviour {
 
 	private static void CheckMouseInput() {
 
+	
         if (Input.GetMouseButtonDown(0) && GameManager.GetGameType() == GameType.Fitts)
             CheckHit(Input.mousePosition);
         else if (GameManager.GetGameType() == GameType.Goal)
@@ -77,6 +78,8 @@ public class InputManager : MonoBehaviour {
         worldPosition = Camera.main.ScreenToWorldPoint (_screenPosition);
 
 		GameManager.SetHitPosition(worldPosition);
+
+
 
 		hit = Physics2D.OverlapPoint(worldPosition);
 
@@ -122,11 +125,8 @@ public class InputManager : MonoBehaviour {
 	}
 
 	private static void CheckCrossing(Vector2 _screenPosition) {
-#if (PRINT_FUNC_CALL)
-        Debug.Log("CheckCrossing");
-#endif
 
-        prevWorldPosition = worldPosition;
+		prevWorldPosition = worldPosition;
 		worldPosition = Camera.main.ScreenToWorldPoint (_screenPosition);
 
 		crossingY = (prevWorldPosition.y + worldPosition.y) / 2;
@@ -134,16 +134,22 @@ public class InputManager : MonoBehaviour {
 		for (int i = 0; i < GameManager.GetTotalTargets(); i++) {
 
 			target = GameManager.GetTargetAttributes (i);
-
-            if (GameManager.GetGoalTarget(i).GetComponent<GoalTarget>().IsNewHit())
-            {
-                GameManager.GetGoalTarget(i).GetComponent<GoalTarget>().DeactivateHit();
-
-                GameManager.SetHitPosition(new Vector2(target.x, crossingY));
-                GameManager.GetGoalTarget(i).Cross();
-
-                cross = true;
-            }
+		
+		
+		var targetXPos = GameManager.GetGoalTarget(i).gameObject.transform.position.x;
+		bool hasCrossed = false;
+		if (targetXPos > prevWorldPosition.x && targetXPos < worldPosition.x) {
+			hasCrossed = true;
+		} else if (targetXPos < prevWorldPosition.x && targetXPos > worldPosition.x) {
+			hasCrossed = true;
+		}
+		
+		if (hasCrossed)
+		{
+			GameManager.SetHitPosition(new Vector2(target.x, crossingY));
+			GameManager.GetGoalTarget(i).Cross();
+			cross = true;
+		}
 		}
 	}
 
