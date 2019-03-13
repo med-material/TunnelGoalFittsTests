@@ -29,6 +29,7 @@ public enum InputResponders
 public enum InputType
 {
     mouse,
+	pressuresensor,
     keyboard,
     touchpad,
     eyeTracking,

@@ -58,8 +58,6 @@ public class GameManager : MonoBehaviour
     private static AudioClip errorClip;
     private static AudioClip missClip;
 
-    private static StartButton startButton;
-
     private static bool inGame = false;
 
     private static FittsTarget[] allFittsTarget;
@@ -105,7 +103,7 @@ public class GameManager : MonoBehaviour
     private Slider roundsSlider;
 
     [SerializeField]
-    private GameObject uicanvas;
+    private InputManager inputManager;
 
     void Awake()
     {
@@ -170,11 +168,9 @@ public class GameManager : MonoBehaviour
     {
 
         if (inGame) {
-            InputManager.CheckInput();
+            inputManager.CheckInput();
             //if (TunnelManager.GetTunnelOn ())
             //	TunnelManager.CheckTunnel ();
-        } else {
-            InputManager.CheckStart();
         }
     }
 
@@ -312,8 +308,6 @@ public class GameManager : MonoBehaviour
         allTunnelTarget = null;
         allBarObjects = null;
         allTargetObjects = null;
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.name);
     }
 
     public static int GetCurrentTarget()

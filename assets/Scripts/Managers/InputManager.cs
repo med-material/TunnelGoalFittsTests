@@ -2,10 +2,13 @@
 
 using UnityEngine;
 using System.Collections;
+using System.IO;
+using System;
+using UnityEngine.UI;
 
 public class InputManager : MonoBehaviour {
 
-	public static InputManager instance = null; 
+	public static InputManager instance = null;
 
 	private static Collider2D hit;
 	private static Vector2 worldPosition;
@@ -18,6 +21,12 @@ public class InputManager : MonoBehaviour {
 
 	private static bool cross = false;
 
+	[SerializeField]
+	private Dropdown inputDropdown;
+
+	[SerializeField]
+	private Cursor cursor;
+
 	void Awake() {
 
 		if (instance == null)
@@ -25,10 +34,34 @@ public class InputManager : MonoBehaviour {
 		else if (instance != this)
 			Destroy(this);  
 	}
-	
-	public static void CheckInput() {
 
-		if (SystemInfo.deviceType == DeviceType.Handheld) {
+	public void CheckPressure() {
+
+        if (Input.GetKeyDown(KeyCode.Space) && GameManager.GetGameType() == GameType.Fitts)
+            CheckHit(cursor.GetScreenPosition());
+        else if (GameManager.GetGameType() == GameType.Goal)
+        {
+                CheckCrossing(cursor.GetScreenPosition());
+        }
+		else if (GameManager.GetGameType() == GameType.Tunnel){
+			CheckTunnelCrossing(cursor.GetScreenPosition());
+		}
+
+	}
+
+	public void inputType_onValueChanged() {
+		if (inputDropdown.value == (int) InputType.pressuresensor) {
+			cursor.gameObject.SetActive(true);
+		} else {
+			cursor.gameObject.SetActive(false);
+		}
+	}
+
+	public void CheckInput() {
+
+		if (inputDropdown.value == (int) InputType.pressuresensor) {
+			CheckPressure();
+		} else if (SystemInfo.deviceType == DeviceType.Handheld) {
 
 			CheckTouchInput();
 		}
@@ -36,6 +69,8 @@ public class InputManager : MonoBehaviour {
 
 			CheckMouseInput();
 		}
+
+
 	}
 
 	private static void CheckMouseInput() {
@@ -51,6 +86,11 @@ public class InputManager : MonoBehaviour {
 			CheckTunnelCrossing(Input.mousePosition);
 		}
     }
+
+	private static void CheckPressureInput() {
+
+
+	}
 
 	private static void CheckTouchInput() {
 
@@ -167,25 +207,6 @@ public class InputManager : MonoBehaviour {
 
 				_collider.GetComponent<FittsTarget>().Hit();
 			}
-		}
-	}
-
-	public static void CheckStart() {
-#if (PRINT_FUNC_CALL)
-        Debug.Log("CheckStart");
-#endif
-        if (Input.GetMouseButtonDown (0)) {
-
-			worldPosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-
-			hit = Physics2D.OverlapPoint(worldPosition);
-			
-			if(hit != null && hit.tag == "StartButton") {
-
-				hit.GetComponent<StartButton>().Hit();
-			}
-
-			cross = true;
 		}
 	}
 
