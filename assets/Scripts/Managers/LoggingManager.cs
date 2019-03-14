@@ -98,8 +98,23 @@ public class LoggingManager : MonoBehaviour {
 
         // directory = Application.persistentDataPath + "/Data/";
 
+		if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor) {
+			directory = "C:\\rtii\\" + "tunnelgoalfitts" + "\\";
+			print ("Windows");
+		}
+		else if(Application.platform == RuntimePlatform.LinuxPlayer || Application.platform == RuntimePlatform.LinuxEditor) {
+			directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/rtii/" + "tunnelgoalfitts" + "/";
+			print("Linux");
+		} else if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer) {
+			directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/rtii/" + "tunnelgoalfitts" + "/";
+			print("Mac OSX");
+		} else {
+            directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/rtii/" + "tunnelgoalfitts" + "/";
+            print("Unknown");
+		}
+/*
         directory = Application.dataPath + "/../Data/";
-
+ */
 
         if (!Directory.Exists(directory))
 		{
@@ -176,11 +191,12 @@ public class LoggingManager : MonoBehaviour {
 	}
 
 	public static void NewLog() {
-		
+		/*
 		fileName = System.DateTime.Now.ToString() + ".csv";
 		fileName = fileName.Replace ('/', '-');
 		fileName = fileName.Replace (':', '-');
-
+		*/
+		fileName = "rtii_output.csv";
 		using (StreamWriter writer = File.AppendText(directory + fileName))
 		{
 			writer.WriteLine(headers);
