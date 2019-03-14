@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using System.Collections;
 using System.IO;
 using UnityEngine.UI;
@@ -91,10 +90,12 @@ public class LoggingManager : MonoBehaviour {
 			Destroy(this);
 
 		// Don't run if UserID isn't set
-		if(userID == ""){
+		/*		if(userID == ""){
 			Debug.LogError("Please set User ID");
 			EditorApplication.ExecuteMenuItem("Edit/Play");
 		}
+		 */
+
 
         // directory = Application.persistentDataPath + "/Data/";
 
