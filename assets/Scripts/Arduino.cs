@@ -58,6 +58,9 @@ public class Arduino : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        var connectToArduino = GameObject.Find("ConnectToArduino").GetComponent<ConnectToArduino>();
+        BaudRate = connectToArduino.sanitizedBaudRate;
+        PortName = connectToArduino.sanitizedSerialPort;
         OpenPort(); //Open the serial port when the scene is loaded.
     }
 	

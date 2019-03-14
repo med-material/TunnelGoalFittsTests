@@ -122,7 +122,7 @@ public class LoggingManager : MonoBehaviour {
 			Directory.CreateDirectory(directory);
 		}
 
-		_userID = emailField.text;
+		_userID = GameObject.Find("ConnectToArduino").GetComponent<ConnectToArduino>().email;
 		_inputType = (InputType) inputTypeDropdown.value;
 		_inputResponders = (InputResponders) inputResponderDropdown.value;
 	}
