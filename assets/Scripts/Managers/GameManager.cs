@@ -104,6 +104,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private InputManager inputManager;
+    
+    [SerializeField]
+    private GameObject _uicanvas;
+    private static GameObject uicanvas;
 
     void Awake()
     {
@@ -124,6 +128,8 @@ public class GameManager : MonoBehaviour
         S_tunnel = _S_tunnel;
         D_goal = _D_goal;
         S_goal = _S_goal;
+
+        uicanvas = _uicanvas;
 
         rounds = _rounds;
         successClip = _successClip;
@@ -310,6 +316,17 @@ public class GameManager : MonoBehaviour
         allTargetObjects = null;
     }
 
+    public static void ReturnMainMenu() {
+        uicanvas.SetActive(true);
+
+        if (gameType == GameType.Fitts)
+            PrepareFittsGame();
+        else if (gameType == GameType.Tunnel)
+            PrepareTunnelGame();
+        else if (gameType == GameType.Goal)
+            PrepareGoalGame();
+    }
+
     public static int GetCurrentTarget()
     {
 
@@ -340,6 +357,7 @@ public class GameManager : MonoBehaviour
             {
 
                 EndGame();
+                ReturnMainMenu();
             }
         }
         if (inGame) {
