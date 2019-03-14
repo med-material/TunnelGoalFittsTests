@@ -106,15 +106,22 @@ public class LoggingManager : MonoBehaviour {
 			Directory.CreateDirectory(directory);
 		}
 
-		_userID	= userID;
-		_inputType	= inputType;
-		_inputResponders = inputResponders;
+		_userID = emailField.text;
+		_inputType = (InputType) inputTypeDropdown.value;
+		_inputResponders = (InputResponders) inputResponderDropdown.value;
 	}
 
 	public void emailField_Changed() {
 		_userID = emailField.text;
 	}
 
+	public void onInputType_Changed() {
+		_inputType = (InputType) inputTypeDropdown.value;
+	}
+
+	public void onInputResponder_Changed() {
+		_inputResponders = (InputResponders) inputResponderDropdown.value;
+	}
 	public static void NewEntry(GameType _gameType, string _hitType, 
 	                     int _targetNumber,
 	                     int _targetID, 
