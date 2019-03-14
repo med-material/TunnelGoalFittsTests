@@ -12,9 +12,20 @@ public class TunnelTarget : Target {
     private SpriteRenderer sprite;
     private bool newHit = false;
 
+	[SerializeField]
+	private Color activeColor;
+
+	[SerializeField]
+	private Color inactiveColor;
+
+	[SerializeField]
+	private Color feedbackColor;
+
+
     void Awake()
     {
         sprite = this.GetComponent<SpriteRenderer>();
+        sprite.color = inactiveColor;
     }
 
     void Update()
@@ -23,7 +34,7 @@ public class TunnelTarget : Target {
         {
             if (Time.time - hitTime > animationTime)
             {
-                sprite.color = Color.white;
+                sprite.color = inactiveColor;
 
                 feedback = false;
             }
@@ -52,7 +63,7 @@ public class TunnelTarget : Target {
 
     public new void SetActiveTarget()
     {
-        sprite.color = Color.green;
+        sprite.color = activeColor;
     }
 
 
@@ -80,7 +91,7 @@ public class TunnelTarget : Target {
         feedback = true;
         hitTime = Time.time;
 
-        sprite.color = Color.red;
+        sprite.color = feedbackColor;
     }
 
 }

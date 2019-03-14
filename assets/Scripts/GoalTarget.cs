@@ -22,6 +22,10 @@ public class GoalTarget : Target {
 
 	[SerializeField]
 	private Color activeColor;
+
+	[SerializeField]
+	private Color inactiveColor;
+
 	[SerializeField]
 	private Color feedbackColor;
 
@@ -36,6 +40,9 @@ public class GoalTarget : Target {
 		midSprite = midLine.GetComponent<SpriteRenderer> ();
 		topSprite = topLine.GetComponent<SpriteRenderer> ();
 		bottomSprite = bottomLine.GetComponent<SpriteRenderer> ();
+		midSprite.color = inactiveColor;
+		topSprite.color = inactiveColor;
+		bottomSprite.color = inactiveColor;
 	}
 
     void Update() {
@@ -43,9 +50,9 @@ public class GoalTarget : Target {
 
 			if(Time.time - hitTime > animationTime) {
 
-				midSprite.color = Color.white;
-				topSprite.color = Color.white;
-				bottomSprite.color = Color.white;
+				midSprite.color = inactiveColor;
+				topSprite.color = inactiveColor;
+				bottomSprite.color = inactiveColor;
 
 				feedback = false;
 			}

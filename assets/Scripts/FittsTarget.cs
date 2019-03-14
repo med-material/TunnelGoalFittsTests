@@ -12,9 +12,20 @@ public class FittsTarget : Target
 
     private SpriteRenderer sprite;
 
+	[SerializeField]
+	private Color activeColor;
+
+	[SerializeField]
+	private Color inactiveColor;
+
+	[SerializeField]
+	private Color feedbackColor;
+
+
     void Awake()
     {
         sprite = this.GetComponent<SpriteRenderer>();
+        sprite.color = inactiveColor;
     }
 
     void Update()
@@ -23,7 +34,7 @@ public class FittsTarget : Target
         {
             if (Time.time - hitTime > animationTime)
             {
-                sprite.color = Color.white;
+                sprite.color = inactiveColor;
 
                 feedback = false;
             }
@@ -31,7 +42,7 @@ public class FittsTarget : Target
     }
     public new void SetActiveTarget()
     {
-        sprite.color = Color.green;
+        sprite.color = activeColor;
     }
 
     public void Hit()
@@ -57,7 +68,7 @@ public class FittsTarget : Target
         feedback = true;
         hitTime = Time.time;
 
-        sprite.color = Color.red;
+        sprite.color = feedbackColor;
     }
 
 }
