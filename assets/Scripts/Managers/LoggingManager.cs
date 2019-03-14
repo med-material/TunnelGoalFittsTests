@@ -198,9 +198,11 @@ public class LoggingManager : MonoBehaviour {
 		fileName = fileName.Replace (':', '-');
 		*/
 		fileName = "rtii_output.csv";
-		using (StreamWriter writer = File.AppendText(directory + fileName))
-		{
-			writer.WriteLine(headers);
+		if (!File.Exists(directory + fileName)) {
+			using (StreamWriter writer = File.AppendText(directory + fileName))
+			{
+				writer.WriteLine(headers);
+			}
 		}
 	}
 }
