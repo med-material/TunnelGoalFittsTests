@@ -47,7 +47,7 @@ void loop() {
 
   SerialOutput(); //Check if it is time to send data to Unity
 
-  // digitalWrite(13,Pulse); // Light up the LED on Pin 13 when a pulse is detected
+  digitalWrite(13,Pulse); // Light up the LED on Pin 13 when a pulse is detected
 }
 
 void ReadSensors()
@@ -56,7 +56,7 @@ void ReadSensors()
 
   pressure = analogRead(pressurePin);
 
-  //checkPulseSensor();
+  checkPulseSensor();
 }
 
 const int inputCount = 4; //This must match the amount of bytes you send from Unity!
