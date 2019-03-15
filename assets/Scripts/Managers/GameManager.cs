@@ -9,7 +9,8 @@ public enum GameType
 {
     Fitts,
     Tunnel,
-    Goal
+    Goal,
+    Custom
 }
 ;
 
@@ -109,9 +110,13 @@ public class GameManager : MonoBehaviour
     private GameObject _uicanvas;
     private static GameObject uicanvas;
 
+   [SerializeField]
+    private Text customGameInstructions;
+    private string GameInstructionsTemplate;
+
     void Awake()
     {
-
+        GameInstructionsTemplate = customGameInstructions.text;
         if (instance == null)
             instance = this;
         else if (instance != this)
@@ -178,12 +183,17 @@ public class GameManager : MonoBehaviour
             //if (TunnelManager.GetTunnelOn ())
             //	TunnelManager.CheckTunnel ();
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            Application.Quit();
+        }
     }
 
     public void gameTypeToggleTunnel() {
         if (allTargetObjects != null && allTargetObjects.Length > 0) {
             EndGame();
         }
+        customGameInstructions.gameObject.SetActive(false);
         gameType = GameType.Tunnel;
         PrepareTunnelGame();
     }
@@ -192,6 +202,7 @@ public class GameManager : MonoBehaviour
         if (allTargetObjects != null && allTargetObjects.Length > 0) {
             EndGame();
         }
+        customGameInstructions.gameObject.SetActive(false);
         gameType = GameType.Fitts;
         PrepareFittsGame();
     }
@@ -200,8 +211,17 @@ public class GameManager : MonoBehaviour
         if (allTargetObjects != null && allTargetObjects.Length > 0) {
             EndGame();
         }
+        customGameInstructions.gameObject.SetActive(false);
         gameType = GameType.Goal;
         PrepareGoalGame();
+    }
+
+    public void gameTypeToggleCustom() {
+        if (allTargetObjects != null && allTargetObjects.Length > 0) {
+            EndGame();
+        }
+        gameType = GameType.Custom;
+        PrepareCustomGame();
     }
 
     public void size_onSliderChanged() {
@@ -258,6 +278,8 @@ public class GameManager : MonoBehaviour
             PrepareTunnelGame();
         else if (gameType == GameType.Goal)
             PrepareGoalGame();
+        else if (gameType == GameType.Custom)
+            customGameInstructions.text = "Now logging the Arduino..";
 
         if (targetAttributes.Length > 0)
         {
@@ -617,6 +639,11 @@ public class GameManager : MonoBehaviour
         }
 
 
+    }
+
+    private void PrepareCustomGame() {
+        customGameInstructions.gameObject.SetActive(true);
+        customGameInstructions.text = GameInstructionsTemplate;
     }
 
     //    private static void PrepareBullseyeGame() {
