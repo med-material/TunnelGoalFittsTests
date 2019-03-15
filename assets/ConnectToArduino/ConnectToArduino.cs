@@ -91,6 +91,10 @@ public class ConnectToArduino : MonoBehaviour
         }
     }
 
+    public void RedirectToScene() {
+            SceneManager.LoadSceneAsync(redirectScene);
+    }
+
     private void displayArduinoError() {
         connectStatus.text = "Could not connect to Arduino on port: " + sanitizedSerialPort;
         connectStatus.color = errorColor;
@@ -154,7 +158,7 @@ public class ConnectToArduino : MonoBehaviour
             connectStatus.text = "Connected to Arduino on port: " + sanitizedSerialPort;
             connectStatus.color = connectedColor;
             CloseConnection();
-            SceneManager.LoadSceneAsync(redirectScene);
+            RedirectToScene();
         } else {
             displayArduinoError();
         }
