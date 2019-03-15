@@ -23,7 +23,7 @@ public class ArduinoLogger : MonoBehaviour
     void Start ()
 	{
         _MatchFittsLawLogging = MatchFittsLawLogging;
-
+/*
         if (path == "")
         {
 
@@ -43,11 +43,30 @@ public class ArduinoLogger : MonoBehaviour
         else
             FileName += string.Format(" {0:HH mm ss yyyy-MM-dd}", DateTime.Now) + FileFormat;
         fileWriter = new StreamWriter(path + FileName);
+ */
+        string directory;
+		if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor) {
+			directory = "C:\\rtii\\" + "tunnelgoalfitts" + "\\";
+			print ("Windows");
+		}
+		else if(Application.platform == RuntimePlatform.LinuxPlayer || Application.platform == RuntimePlatform.LinuxEditor) {
+			directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/rtii/" + "tunnelgoalfitts" + "/";
+			print("Linux");
+		} else if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer) {
+			directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/rtii/" + "tunnelgoalfitts" + "/";
+			print("Mac OSX");
+		} else {
+            directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/rtii/" + "tunnelgoalfitts" + "/";
+            print("Unknown");
+		}
+
+        fileWriter = new StreamWriter(directory + "rtii_output_arduino.csv");
+
         if(_MatchFittsLawLogging)
 	        fileWriter.WriteLine(AltHeader);
         else
             fileWriter.WriteLine(header);
-
+ 
         Arduino.NewDataEvent += NewData;
 	}
 
