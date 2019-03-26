@@ -1,12 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Globalization;
 public class Cursor : MonoBehaviour
 {
-    
-    [SerializeField]
-    private Arduino arduino;
 
     [SerializeField]
     private Camera sceneCamera;
@@ -23,21 +20,21 @@ public class Cursor : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        Arduino.NewDataEvent += NewData;
     }
 
+    void NewData(Dictionary<string, List<string>> data) {
+        float.TryParse(data["Pressure"][data["Pressure"].Count-1], NumberStyles.Any, CultureInfo.InvariantCulture, out pressure);
+    }
     // Update is called once per frame
     void Update()
     {
-        // read arduino.pressuresensor
-        //
-        pressure = (float) arduino.rawPressure;
         if (pressure < minPressure) {
             this.transform.position = sceneCamera.ViewportToWorldPoint(new Vector2(0.0f, 0.5f));
         } else if (pressure > maxPressure) {
             this.transform.position = sceneCamera.ViewportToWorldPoint(new Vector2(1.0f, 0.5f));
         } else {
-            xPos = ((float) arduino.rawPressure - minPressure) / (maxPressure - minPressure);
+            xPos = (pressure - minPressure) / (maxPressure - minPressure);
             this.transform.position = sceneCamera.ViewportToWorldPoint(new Vector2(xPos, 0.5f));
         }
 
