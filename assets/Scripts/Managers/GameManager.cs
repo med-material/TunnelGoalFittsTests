@@ -189,6 +189,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void QuitApplication() {
+        Application.Quit();
+    }
+
     public void gameTypeToggleTunnel() {
         if (allTargetObjects != null && allTargetObjects.Length > 0) {
             EndGame();

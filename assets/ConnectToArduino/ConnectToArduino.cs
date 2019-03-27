@@ -207,4 +207,8 @@ public class ConnectToArduino : MonoBehaviour
         }
     }
 
+    public void QuitApplication() {
+        Application.Quit();
+    }
+
 }
