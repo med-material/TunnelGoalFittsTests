@@ -569,24 +569,32 @@ public class GameManager : MonoBehaviour
 
         Bounds b = CameraBounds();
         float barPos = ((b.extents.y - (S_tunnel / 2))/2) + (S_tunnel / 2);
+        float barPosX = ((b.extents.x - (S_tunnel / 2))/2) + (S_tunnel * 1.3f);
         float barHeight = (b.extents.y - (S_tunnel / 2));
+        float barWidth = (b.extents.x - (S_tunnel * 4.3f));
 
         if (allTargetObjects == null) {
             totalTargets = 2;
             allTunnelTarget = new TunnelTarget[totalTargets];
             allTargetObjects = new GameObject[totalTargets];
-            allTunnelBars = new TunnelBar[2];
-            allBarObjects = new GameObject[2];
+            allTunnelBars = new TunnelBar[4];
+            allBarObjects = new GameObject[4];
             Debug.Log("Preparing Tunnel Game");
 
             allBarObjects[0] = Instantiate(Resources.Load("Prefabs/TunnelBar", typeof(GameObject)), new Vector2(0, barPos), Quaternion.identity) as GameObject;
             allTunnelBars[0] = allBarObjects[0].GetComponent<TunnelBar>();
             allBarObjects[1] = Instantiate(Resources.Load("Prefabs/TunnelBar", typeof(GameObject)), new Vector2(0, -barPos), Quaternion.identity) as GameObject;
             allTunnelBars[1] = allBarObjects[1].GetComponent<TunnelBar>();
+            allBarObjects[2] = Instantiate(Resources.Load("Prefabs/TunnelBar", typeof(GameObject)), new Vector2(barPosX, 0), Quaternion.identity) as GameObject;
+            allTunnelBars[2] = allBarObjects[2].GetComponent<TunnelBar>();
+            allBarObjects[3] = Instantiate(Resources.Load("Prefabs/TunnelBar", typeof(GameObject)), new Vector2(-barPosX, 0), Quaternion.identity) as GameObject;
+            allTunnelBars[3] = allBarObjects[3].GetComponent<TunnelBar>();
         }
 
-        allTunnelBars[0].SetSize((int)b.extents.x*2, (int)barHeight);
+        allTunnelBars[0].SetSize((int)b.extents.x * 2, (int)barHeight);
         allTunnelBars[1].SetSize((int)b.extents.x * 2, (int)barHeight);
+        allTunnelBars[2].SetSize((int)barWidth, (int)b.extents.y * 2);
+        allTunnelBars[3].SetSize((int)barWidth, (int)b.extents.y * 2);
 
         Debug.Log("CamRect: " + CameraBounds());
         Debug.Log("allTargetObjects  count: " + allTargetObjects.Length);
