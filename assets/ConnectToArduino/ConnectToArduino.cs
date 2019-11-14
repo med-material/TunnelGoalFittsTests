@@ -149,7 +149,7 @@ public class ConnectToArduino : MonoBehaviour
 
         UnityEngine.Debug.Log(sanitizedSerialPort);
         UnityEngine.Debug.Log(sanitizedBaudRate);
-        serialport = new SerialPort (sanitizedSerialPort, sanitizedBaudRate);
+        serialport = new SerialPort (@"\\.\"+sanitizedSerialPort, sanitizedBaudRate);
         email = emailInputField.text;
         connectingToArduino = true;
         bool connected = OpenConnection();
