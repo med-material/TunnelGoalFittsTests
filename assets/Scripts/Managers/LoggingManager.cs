@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine.UI;
 using System;
@@ -68,6 +69,7 @@ public class LoggingManager : MonoBehaviour {
 	private static string date;
 	private static string time;
 
+	private static ConnectToMySQL connectToMySQL;
 	// UI
 	[SerializeField]
 	private Dropdown inputResponderDropdown;
@@ -78,6 +80,9 @@ public class LoggingManager : MonoBehaviour {
 	[SerializeField]
 	private InputField emailField;
 	public void Awake() {
+
+		connectToMySQL = FindObjectOfType<ConnectToMySQL>();
+
 		var optionsList = Enum.GetNames(typeof(InputResponders)).ToList();
 		inputResponderDropdown.AddOptions(optionsList);
 
@@ -138,7 +143,9 @@ public class LoggingManager : MonoBehaviour {
 	public void onInputResponder_Changed() {
 		_inputResponders = (InputResponders) inputResponderDropdown.value;
 	}
-	public static void NewEntry(GameType _gameType, string _hitType, 
+	public static void NewEntry(GameType _gameType, 
+
+						 string _hitType,
 	                     int _targetNumber,
 	                     int _targetID, 
 	                     float _sessionTime, 
@@ -154,6 +161,46 @@ public class LoggingManager : MonoBehaviour {
 
 		date = System.DateTime.Now.ToString("yyyy-MM-dd");
 		time = System.DateTime.Now.ToString("HH:mm:ss:ffff");
+
+	Dictionary <string, List<string>> logs = new Dictionary<string, List<string>>() //create a new dictionary
+		
+		{
+			{"Email", new List<string>()},
+			{"Date", new List<string>()},
+			{"Time", new List<string>()},
+			{"UserID", new List<string>()},
+			{"GameType", new List<string>()},
+			{"InputType", new List<string>()},
+			{"InputResponders", new List<string>()},
+			{"HitType", new List<string>()},
+			{"TargetNumber", new List<string>()},
+			{"TargetID", new List<string>()},
+			{"SessionTime", new List<string>()},
+			{"DeltaTime", new List<string>()},
+			{"TargetX", new List<string>()},
+			{"TargetY", new List<string>()},
+			{"HitX", new List<string>()},
+			{"HitY", new List<string>()},
+			{"HitOffsetX", new List<string>()},
+			{"HitOffsetY", new List<string>()},
+			{"OutsetTargetX", new List<string>()},
+			{"OutsetTargetY", new List<string>()},
+			{"TargetDeltaX", new List<string>()},
+			{"TargetDeltaY", new List<string>()},
+			{"OutsetHitX", new List<string>()},
+			{"OutsetHitY", new List<string>()},
+			{"DeltaHitX", new List<string>()},
+			{"DeltaHitY", new List<string>()},
+			{"TargetDiameter", new List<string>()},
+			{"ColliderDiameter", new List<string>()},
+			{"Backtracking", new List<string>()},
+			{"ErrorTargetID", new List<string>()},
+			
+
+
+		}; 
+
+
 
 		currentEntry = 	date + sep +
 						time + sep +
@@ -189,7 +236,45 @@ public class LoggingManager : MonoBehaviour {
 		{
 			writer.WriteLine(currentEntry);
 		}
-	}
+
+		string b = System.Enum.GetName(typeof(GameType), _gameType);         //To Get the name of the enumerator
+
+		logs["Email"].Add("hello@email.test");
+		logs["Date"].Add(date);
+		logs["Time"].Add(time);
+		logs["UserID"].Add(_userID.ToString());
+		logs["GameType"].Add(System.Enum.GetName(typeof(GameType), _gameType));
+		logs["InputType"].Add(System.Enum.GetName(typeof(InputType), _inputType));
+		logs["InputResponders"].Add(System.Enum.GetName(typeof(InputResponders), _inputResponders));
+		logs["HitType"].Add(_hitType);
+		logs["TargetNumber"].Add(_targetNumber.ToString());
+		logs["TargetID"].Add(_targetID.ToString());
+		logs["SessionTime"].Add(_sessionTime.ToString());
+		logs["DeltaTime"].Add(_deltaTime.ToString());
+		logs["TargetX"].Add(_targetPos.x.ToString());
+		logs["TargetY"].Add(_targetPos.y.ToString());
+		logs["HitX"].Add(_hitPos.x.ToString());
+		logs["HitY"].Add(_hitPos.y.ToString());
+		logs["HitOffsetX"].Add(_hitPos.x.ToString());
+		logs["HitOffsetY"].Add(_hitPos.y.ToString());
+		logs["OutsetTargetX"].Add(_outsetTarget.x.ToString());
+		logs["OutsetTargetY"].Add(_outsetTarget.y.ToString());
+		logs["TargetDeltaX"].Add(_targetPos.x.ToString());
+		logs["TargetDeltaY"].Add(_targetPos.y.ToString());
+		logs["OutsetHitX"].Add(_outsetHit.x.ToString());
+		logs["OutsetHitY"].Add(_outsetHit.y.ToString());
+		logs["DeltaHitX"].Add(_hitPos.x.ToString());
+		logs["DeltaHitY"].Add(_hitPos.y.ToString());
+		logs["TargetDiameter"].Add(_diameter.ToString());
+		logs["ColliderDiameter"].Add(_diameter.ToString());
+		logs["Backtracking"].Add(_backtracking.ToString());
+		logs["ErrorTargetID"].Add(_errorTargetID.ToString());
+		
+
+		connectToMySQL.AddToUploadQueue(logs);
+		connectToMySQL.UploadNow();
+		
+		}
 
 	public static void NewLog() {
 		/*
