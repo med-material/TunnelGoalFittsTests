@@ -69,6 +69,8 @@ public class LoggingManager : MonoBehaviour {
 	private static string date;
 	private static string time;
 
+	private static Dictionary <string, List<string>> logs;
+
 	private static ConnectToMySQL connectToMySQL;
 	// UI
 	[SerializeField]
@@ -82,6 +84,44 @@ public class LoggingManager : MonoBehaviour {
 	public void Awake() {
 
 		connectToMySQL = FindObjectOfType<ConnectToMySQL>();
+
+		logs = new Dictionary<string, List<string>>() //create a new dictionary
+		
+		{
+			{"Email", new List<string>()},
+			{"Date", new List<string>()},
+			{"Time", new List<string>()},
+			{"UserID", new List<string>()},
+			{"GameType", new List<string>()},
+			{"InputType", new List<string>()},
+			{"InputResponders", new List<string>()},
+			{"HitType", new List<string>()},
+			{"TargetNumber", new List<string>()},
+			{"TargetID", new List<string>()},
+			{"SessionTime", new List<string>()},
+			{"DeltaTime", new List<string>()},
+			{"TargetX", new List<string>()},
+			{"TargetY", new List<string>()},
+			{"HitX", new List<string>()},
+			{"HitY", new List<string>()},
+			{"HitOffsetX", new List<string>()},
+			{"HitOffsetY", new List<string>()},
+			{"OutsetTargetX", new List<string>()},
+			{"OutsetTargetY", new List<string>()},
+			{"TargetDeltaX", new List<string>()},
+			{"TargetDeltaY", new List<string>()},
+			{"OutsetHitX", new List<string>()},
+			{"OutsetHitY", new List<string>()},
+			{"DeltaHitX", new List<string>()},
+			{"DeltaHitY", new List<string>()},
+			{"TargetDiameter", new List<string>()},
+			{"ColliderDiameter", new List<string>()},
+			{"Backtracking", new List<string>()},
+			{"ErrorTargetID", new List<string>()},
+			
+
+
+		}; 
 
 		var optionsList = Enum.GetNames(typeof(InputResponders)).ToList();
 		inputResponderDropdown.AddOptions(optionsList);
@@ -162,43 +202,7 @@ public class LoggingManager : MonoBehaviour {
 		date = System.DateTime.Now.ToString("yyyy-MM-dd");
 		time = System.DateTime.Now.ToString("HH:mm:ss:ffff");
 
-	Dictionary <string, List<string>> logs = new Dictionary<string, List<string>>() //create a new dictionary
-		
-		{
-			{"Email", new List<string>()},
-			{"Date", new List<string>()},
-			{"Time", new List<string>()},
-			{"UserID", new List<string>()},
-			{"GameType", new List<string>()},
-			{"InputType", new List<string>()},
-			{"InputResponders", new List<string>()},
-			{"HitType", new List<string>()},
-			{"TargetNumber", new List<string>()},
-			{"TargetID", new List<string>()},
-			{"SessionTime", new List<string>()},
-			{"DeltaTime", new List<string>()},
-			{"TargetX", new List<string>()},
-			{"TargetY", new List<string>()},
-			{"HitX", new List<string>()},
-			{"HitY", new List<string>()},
-			{"HitOffsetX", new List<string>()},
-			{"HitOffsetY", new List<string>()},
-			{"OutsetTargetX", new List<string>()},
-			{"OutsetTargetY", new List<string>()},
-			{"TargetDeltaX", new List<string>()},
-			{"TargetDeltaY", new List<string>()},
-			{"OutsetHitX", new List<string>()},
-			{"OutsetHitY", new List<string>()},
-			{"DeltaHitX", new List<string>()},
-			{"DeltaHitY", new List<string>()},
-			{"TargetDiameter", new List<string>()},
-			{"ColliderDiameter", new List<string>()},
-			{"Backtracking", new List<string>()},
-			{"ErrorTargetID", new List<string>()},
-			
-
-
-		}; 
+	
 
 
 
@@ -271,9 +275,23 @@ public class LoggingManager : MonoBehaviour {
 		logs["ErrorTargetID"].Add(_errorTargetID.ToString());
 		
 
-		connectToMySQL.AddToUploadQueue(logs);
-		connectToMySQL.UploadNow();
 		
+		
+		}
+
+		public void sendLogs(){              //Send the logs
+
+		connectToMySQL.AddToUploadQueue(logs);  //
+		connectToMySQL.UploadNow();			//
+
+		resetLogs();
+		}
+		
+		private void resetLogs(){     //reset the logs
+
+		foreach (List<string> Entry in logs.Values ) {   //for each value in the dictionary 
+			Entry.Clear();           //clear the value
+		}
 		}
 
 	public static void NewLog() {

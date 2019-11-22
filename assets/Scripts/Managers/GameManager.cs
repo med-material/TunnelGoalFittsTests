@@ -112,6 +112,7 @@ public class GameManager : MonoBehaviour
 
    [SerializeField]
     private Text customGameInstructions;
+
     private string GameInstructionsTemplate;
 
     void Awake()
@@ -340,6 +341,8 @@ public class GameManager : MonoBehaviour
         allTunnelTarget = null;
         allBarObjects = null;
         allTargetObjects = null;
+
+        GameObject.Find("Managers").GetComponent<LoggingManager>().sendLogs();
     }
 
     public static void ReturnMainMenu() {
