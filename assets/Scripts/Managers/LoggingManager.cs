@@ -58,7 +58,7 @@ public class LoggingManager : MonoBehaviour {
 	public static InputResponders _inputResponders;
 	public static InputType _inputType;
 
-	private static string headers = "Date;Time;UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;TargetsDistance";
+	private static string headers = "Date;Time;UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;TargetsDistanceInches";
 
 	private static StreamWriter writer;
 	private static string directory;
@@ -118,7 +118,7 @@ public class LoggingManager : MonoBehaviour {
 			{"ColliderDiameter", new List<string>()},
 			{"Backtracking", new List<string>()},
 			{"ErrorTargetID", new List<string>()},
-			{"TargetsDistance", new List<string>()}
+			{"TargetsDistanceInches", new List<string>()}
 			
 
 
@@ -278,7 +278,7 @@ public class LoggingManager : MonoBehaviour {
 		logs["ColliderDiameter"].Add(_diameter.ToString());
 		logs["Backtracking"].Add(_backtracking.ToString());
 		logs["ErrorTargetID"].Add(_errorTargetID.ToString());
-		logs["TargetsDistance"].Add(_dTemp.ToString());
+		logs["TargetsDistanceInches"].Add(_dTemp.ToString());
 
 
 		
