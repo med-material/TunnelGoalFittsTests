@@ -58,7 +58,7 @@ public class LoggingManager : MonoBehaviour {
 	public static InputResponders _inputResponders;
 	public static InputType _inputType;
 
-	private static string headers = "Date;Time;UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;TargetsDistanceInches";
+	private static string headers = "Date;Time;UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;TargetsDistanceInches,TargetsSizeeInches";
 
 	private static StreamWriter writer;
 	private static string directory;
@@ -118,7 +118,8 @@ public class LoggingManager : MonoBehaviour {
 			{"ColliderDiameter", new List<string>()},
 			{"Backtracking", new List<string>()},
 			{"ErrorTargetID", new List<string>()},
-			{"TargetsDistanceInches", new List<string>()}
+			{"TargetsDistanceInches", new List<string>()},
+			{"TargetsSizeInches", new List<string>()}
 			
 
 
@@ -200,7 +201,8 @@ public class LoggingManager : MonoBehaviour {
 	                     Vector2 _outsetHit,
 						 bool _backtracking,
 						 int _errorTargetID,
-						 int _dTemp) {
+						 int _dTemp,
+						 int _sTemp2) {
 
 		date = System.DateTime.Now.ToString("yyyy-MM-dd");
 		time = System.DateTime.Now.ToString("HH:mm:ss:ffff");
@@ -237,7 +239,8 @@ public class LoggingManager : MonoBehaviour {
 						_collider + sep +
 						_backtracking + sep +
 						_errorTargetID + sep +
-						_dTemp;
+						_dTemp + sep +
+						_sTemp2;
 						// _dFitt+ sep +
 						// _dTunnel;
 
@@ -279,6 +282,7 @@ public class LoggingManager : MonoBehaviour {
 		logs["Backtracking"].Add(_backtracking.ToString());
 		logs["ErrorTargetID"].Add(_errorTargetID.ToString());
 		logs["TargetsDistanceInches"].Add(_dTemp.ToString());
+		logs["TargetsSizeInches"].Add(_sTemp2.ToString());
 
 
 		

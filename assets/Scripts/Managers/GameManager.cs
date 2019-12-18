@@ -498,6 +498,8 @@ public class GameManager : MonoBehaviour
 
     private static void MakeLogEntry(string _hitType)
     {
+
+
         int temp = -1;
 
         if (gameType == GameType.Tunnel) 
@@ -515,6 +517,19 @@ public class GameManager : MonoBehaviour
 
 
 
+        int temp2 = -1;
+
+        if (gameType == GameType.Tunnel){
+
+            temp2 = S_tunnel;
+
+        } else if (gameType == GameType.Fitts){
+            temp2 = S_fitts;
+
+        } else if (gameType == GameType.Goal){
+            temp2 = S_goal;
+        }
+
 
         LoggingManager.NewEntry(gameType, _hitType,
             targetNumber,
@@ -529,7 +544,8 @@ public class GameManager : MonoBehaviour
             outsetHit,
             backtracking,
             errorTargetID,
-            temp);
+            temp,
+            temp2);
     }
 
     private static void PrepareFittsGame()
