@@ -115,6 +115,8 @@ public class GameManager : MonoBehaviour
 
     private string GameInstructionsTemplate;
 
+    private static string testId = "";
+
     void Awake()
     {
         GameInstructionsTemplate = customGameInstructions.text;
@@ -285,6 +287,8 @@ public class GameManager : MonoBehaviour
             PrepareGoalGame();
         else if (gameType == GameType.Custom)
             customGameInstructions.text = "Now logging the Arduino..";
+        
+        testId = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
         if (targetAttributes.Length > 0)
         {
@@ -511,7 +515,8 @@ public class GameManager : MonoBehaviour
             outsetTarget,
             outsetHit,
             backtracking,
-            errorTargetID);
+            errorTargetID,
+            testId);
     }
 
     private static void PrepareFittsGame()
