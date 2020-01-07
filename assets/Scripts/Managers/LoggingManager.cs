@@ -58,7 +58,7 @@ public class LoggingManager : MonoBehaviour {
 	public static InputResponders _inputResponders;
 	public static InputType _inputType;
 
-	private static string headers = "Date;Time;UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID";
+	private static string headers = "Date;Time;UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;TestId";
 
 	private static StreamWriter writer;
 	private static string directory;
@@ -81,6 +81,7 @@ public class LoggingManager : MonoBehaviour {
 
 	[SerializeField]
 	private InputField emailField;
+
 	public void Awake() {
 
 		connectToMySQL = FindObjectOfType<ConnectToMySQL>();
@@ -118,7 +119,7 @@ public class LoggingManager : MonoBehaviour {
 			{"ColliderDiameter", new List<string>()},
 			{"Backtracking", new List<string>()},
 			{"ErrorTargetID", new List<string>()},
-			
+			{"TestId", new List<string>()}
 
 
 		}; 
@@ -197,13 +198,14 @@ public class LoggingManager : MonoBehaviour {
 	                     Vector2 _outsetTarget, 
 	                     Vector2 _outsetHit,
 						 bool _backtracking,
-						 int _errorTargetID) {
+						 int _errorTargetID,
+						 string _testId) {
 
 		date = System.DateTime.Now.ToString("yyyy-MM-dd");
 		time = System.DateTime.Now.ToString("HH:mm:ss:ffff");
 
 	
-
+		Debug.Log(_testId);
 
 
 		currentEntry = 	date + sep +
@@ -234,7 +236,8 @@ public class LoggingManager : MonoBehaviour {
 						_diameter + sep +
 						_collider + sep +
 						_backtracking + sep +
-						_errorTargetID;
+						_errorTargetID + sep +
+						_testId;
 
 		using (StreamWriter writer = File.AppendText(directory + fileName))
 		{
@@ -273,7 +276,7 @@ public class LoggingManager : MonoBehaviour {
 		logs["ColliderDiameter"].Add(_diameter.ToString());
 		logs["Backtracking"].Add(_backtracking.ToString());
 		logs["ErrorTargetID"].Add(_errorTargetID.ToString());
-		
+		logs["TestId"].Add(_testId.ToString());
 
 		
 		
@@ -300,6 +303,7 @@ public class LoggingManager : MonoBehaviour {
 		fileName = fileName.Replace ('/', '-');
 		fileName = fileName.Replace (':', '-');
 		*/
+
 		fileName = "rtii_output.csv";
 		if (!File.Exists(directory + fileName)) {
 			using (StreamWriter writer = File.AppendText(directory + fileName))
