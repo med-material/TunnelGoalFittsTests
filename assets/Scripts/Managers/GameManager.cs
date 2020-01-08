@@ -503,21 +503,21 @@ public class GameManager : MonoBehaviour
     private static void MakeLogEntry(string _hitType)
     {
 
-        int temp = -1;
+        int dist = -1;
 
        
 
         if (gameType == GameType.Tunnel)
         {
-            temp = D_tunnel;
+            dist = D_tunnel;
         }
         else if (gameType == GameType.Fitts)
         {
-            temp = D_fitts;
+            dist = D_fitts;
         }
         else if (gameType == GameType.Goal)
         {
-            temp = D_goal;
+            dist = D_goal;
         }
 
         
@@ -535,7 +535,7 @@ public class GameManager : MonoBehaviour
             outsetHit,
             backtracking,
             errorTargetID,
-            temp,
+            dist,
             dateId);
     }
 

@@ -200,7 +200,7 @@ public class LoggingManager : MonoBehaviour {
 	                     Vector2 _outsetHit,
 						 bool _backtracking,
 						 int _errorTargetID,
-						 int _dTemp,
+						 int _dDist,
 						 string _dateId) {
 
 		date = System.DateTime.Now.ToString("yyyy-MM-dd");
@@ -239,7 +239,7 @@ public class LoggingManager : MonoBehaviour {
 						_collider + sep +
 						_backtracking + sep +
 						_errorTargetID + sep +
-						_dTemp + sep +
+						_dDist + sep +
 						_dateId;
 
 		using (StreamWriter writer = File.AppendText(directory + fileName))
@@ -279,7 +279,7 @@ public class LoggingManager : MonoBehaviour {
 		logs["ColliderDiameter"].Add(_diameter.ToString());
 		logs["Backtracking"].Add(_backtracking.ToString());
 		logs["ErrorTargetID"].Add(_errorTargetID.ToString());
-		logs["TargetsDistance"].Add(_dTemp.ToString());
+		logs["TargetsDistance"].Add(_dDist.ToString());
 		logs["DateId"].Add(_dateId.ToString());
 
 		
