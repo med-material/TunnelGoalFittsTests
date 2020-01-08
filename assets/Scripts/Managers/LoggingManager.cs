@@ -58,7 +58,7 @@ public class LoggingManager : MonoBehaviour {
 	public static InputResponders _inputResponders;
 	public static InputType _inputType;
 
-	private static string headers = "Date;Time;UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;DateId";
+	private static string headers = "Date;Time;UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;TargetsDistance;DateId";
 
 	private static StreamWriter writer;
 	private static string directory;
@@ -119,6 +119,7 @@ public class LoggingManager : MonoBehaviour {
 			{"ColliderDiameter", new List<string>()},
 			{"Backtracking", new List<string>()},
 			{"ErrorTargetID", new List<string>()},
+			{"TargetsDistance",new List<string>()},
 			{"DateId", new List<string>()}
 
 
@@ -199,6 +200,7 @@ public class LoggingManager : MonoBehaviour {
 	                     Vector2 _outsetHit,
 						 bool _backtracking,
 						 int _errorTargetID,
+						 int _dTemp,
 						 string _dateId) {
 
 		date = System.DateTime.Now.ToString("yyyy-MM-dd");
@@ -237,6 +239,7 @@ public class LoggingManager : MonoBehaviour {
 						_collider + sep +
 						_backtracking + sep +
 						_errorTargetID + sep +
+						_dTemp + sep +
 						_dateId;
 
 		using (StreamWriter writer = File.AppendText(directory + fileName))
@@ -276,6 +279,7 @@ public class LoggingManager : MonoBehaviour {
 		logs["ColliderDiameter"].Add(_diameter.ToString());
 		logs["Backtracking"].Add(_backtracking.ToString());
 		logs["ErrorTargetID"].Add(_errorTargetID.ToString());
+		logs["TargetsDistance"].Add(_dTemp.ToString());
 		logs["DateId"].Add(_dateId.ToString());
 
 		
@@ -283,6 +287,9 @@ public class LoggingManager : MonoBehaviour {
 		}
 
 		public void sendLogs(){              //Send the logs
+
+		if (logs["Email"].Count == 0)
+		return;
 
 		connectToMySQL.AddToUploadQueue(logs);  //
 		connectToMySQL.UploadNow();			//
