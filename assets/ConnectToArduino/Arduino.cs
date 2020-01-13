@@ -105,6 +105,7 @@ public class Arduino : MonoBehaviour {
         PortName = connectToArduino.sanitizedSerialPort;
         email = connectToArduino.email;
         OpenPort(); //Open the serial port when the scene is loaded.
+        ReopenPort();
     }
 
     //Process the data we get from our Arduino (this function might be called more often than Update(), depending on the chosen polling rate)
@@ -115,8 +116,10 @@ public class Arduino : MonoBehaviour {
 
         // Read what is our current state
         if (receiverState == ReceiverState.Standby) {
+            // Debug.Log(serialInput);
             // Check for "BEGIN" string.
             if (serialInput.Contains ("LOG BEGIN")) {
+                Debug.Log("Logging begin.");
                 // Parse Reported Column and Separator
                 ParseDataArguments(serialInput);
                 onLoggingStarted.Invoke(outputLabel);
