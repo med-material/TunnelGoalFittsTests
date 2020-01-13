@@ -137,7 +137,7 @@ public class InputManager : MonoBehaviour {
 		crossingY = (prevWorldPosition.y + worldPosition.y) / 2;
         float crossingX = (prevWorldPosition.x + worldPosition.x) / 2;
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 2; i++)
         {
             if (GameManager.GetTunnelBars(i).GetComponent<TunnelBar>().IsNewHit())
             {
