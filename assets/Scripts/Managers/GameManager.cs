@@ -535,8 +535,7 @@ public class GameManager : MonoBehaviour
             outsetHit,
             backtracking,
             errorTargetID,
-            dist,
-            dateId);
+            dist);
     }
 
     private static void PrepareFittsGame()
