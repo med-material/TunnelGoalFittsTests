@@ -98,7 +98,6 @@ public class LoggingManager : MonoBehaviour {
 			{"Email", new List<string>()},
 			{"Date", new List<string>()},
 			{"Time", new List<string>()},
-			{"UserID", new List<string>()},
 			{"GameType", new List<string>()},
 			{"InputType", new List<string>()},
 			{"InputResponders", new List<string>()},
@@ -258,10 +257,9 @@ public class LoggingManager : MonoBehaviour {
 
 		string b = System.Enum.GetName(typeof(GameType), _gameType);         //To Get the name of the enumerator
 
-		logs["Email"].Add("hello@email.test");
+		logs["Email"].Add(_userID.ToString());
 		logs["Date"].Add(date);
 		logs["Time"].Add(time);
-		logs["UserID"].Add(_userID.ToString());
 		logs["GameType"].Add(System.Enum.GetName(typeof(GameType), _gameType));
 		logs["InputType"].Add(System.Enum.GetName(typeof(InputType), _inputType));
 		logs["InputResponders"].Add(System.Enum.GetName(typeof(InputResponders), _inputResponders));
