@@ -70,6 +70,7 @@ public class LoggingManager : MonoBehaviour {
 
 	private static string date;
 	private static string time;
+	private static string dateId;
 
 	private static Dictionary <string, List<string>> logs;
 
@@ -210,14 +211,11 @@ public class LoggingManager : MonoBehaviour {
 	                     Vector2 _outsetHit,
 						 bool _backtracking,
 						 int _errorTargetID,
-						 int _dDist,
-						 string _dateId) {
+						 int _dDist) {
 
 		date = System.DateTime.Now.ToString("yyyy-MM-dd");
 		time = System.DateTime.Now.ToString("HH:mm:ss:ffff");
-
-	
-		Debug.Log(_dateId);
+		dateId = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
 
 
 		currentEntry = 	date + sep +
@@ -250,7 +248,7 @@ public class LoggingManager : MonoBehaviour {
 						_backtracking + sep +
 						_errorTargetID + sep +
 						_dDist + sep +
-						_dateId +
+						dateId +
 						_PID;
 
 		using (StreamWriter writer = File.AppendText(directory + fileName))
@@ -291,7 +289,7 @@ public class LoggingManager : MonoBehaviour {
 		logs["Backtracking"].Add(_backtracking.ToString());
 		logs["ErrorTargetID"].Add(_errorTargetID.ToString());
 		logs["TargetsDistance"].Add(_dDist.ToString());
-		logs["DateId"].Add(_dateId.ToString());
+		logs["DateId"].Add(dateId.ToString());
 		logs["PID"].Add(_PID.ToString());
 
 		
