@@ -51,14 +51,16 @@ public class LoggingManager : MonoBehaviour {
 	public static LoggingManager instance = null; 
 
 	public string userID;
+	public string PID;
 	public InputResponders inputResponders;
 	public InputType inputType;
-
+	
+	public static string _PID;
 	public static string _userID;
 	public static InputResponders _inputResponders;
 	public static InputType _inputType;
 
-	private static string headers = "Date;Time;UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;TargetsDistance;DateId";
+	private static string headers = "Date;Time;UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;TargetsDistance;DateId;PID";
 
 	private static StreamWriter writer;
 	private static string directory;
@@ -81,6 +83,9 @@ public class LoggingManager : MonoBehaviour {
 
 	[SerializeField]
 	private InputField emailField;
+
+	[SerializeField]
+	private InputField PIDField;
 
 	public void Awake() {
 
@@ -120,7 +125,8 @@ public class LoggingManager : MonoBehaviour {
 			{"Backtracking", new List<string>()},
 			{"ErrorTargetID", new List<string>()},
 			{"TargetsDistance",new List<string>()},
-			{"DateId", new List<string>()}
+			{"DateId", new List<string>()},
+			{"PID", new List<string>()}
 
 
 		}; 
@@ -172,6 +178,10 @@ public class LoggingManager : MonoBehaviour {
 		_userID = GameObject.Find("ConnectToArduino").GetComponent<ConnectToArduino>().email;
 		_inputType = (InputType) inputTypeDropdown.value;
 		_inputResponders = (InputResponders) inputResponderDropdown.value;
+	}
+
+	public void PID_Changed() {
+		_PID = PIDField.text;
 	}
 
 	public void emailField_Changed() {
@@ -240,7 +250,8 @@ public class LoggingManager : MonoBehaviour {
 						_backtracking + sep +
 						_errorTargetID + sep +
 						_dDist + sep +
-						_dateId;
+						_dateId +
+						_PID;
 
 		using (StreamWriter writer = File.AppendText(directory + fileName))
 		{
@@ -281,8 +292,8 @@ public class LoggingManager : MonoBehaviour {
 		logs["ErrorTargetID"].Add(_errorTargetID.ToString());
 		logs["TargetsDistance"].Add(_dDist.ToString());
 		logs["DateId"].Add(_dateId.ToString());
+		logs["PID"].Add(_PID.ToString());
 
-		
 		
 		}
 
