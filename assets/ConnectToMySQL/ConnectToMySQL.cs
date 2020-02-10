@@ -4,9 +4,20 @@ using System.Collections;
 using System.IO;
 using System;
 using UnityEngine.Networking;
+using UnityEngine.Events;
 using System.Text;
 using System.Linq;
 using UnityEngine.UI;
+
+public enum LogUploadStatus {
+    Success,
+    Error,
+}
+
+public class LogUploadResult {
+	public LogUploadStatus status;
+	public string error;
+}
 
 public class ConnectToMySQL : MonoBehaviour {
 	public static string response = "";
@@ -58,6 +69,11 @@ public class ConnectToMySQL : MonoBehaviour {
 	private GameObject connectButton;
 
 	private GameObject eventSystem;
+
+	[Serializable]
+    public class OnLogsUploaded : UnityEvent<LogUploadResult> { }
+    public OnLogsUploaded onLogsUploaded;
+
 	void Awake() {
 		if (statusMessage != null) {
 			defaultColor = statusMessage.color;
@@ -210,6 +226,16 @@ public class ConnectToMySQL : MonoBehaviour {
 		for(int i = 0; i < logCollection["Email"].Count; i++) {
 			List<string> row = new List<string>();
 			foreach(string key in logCollection.Keys) {
+				if (logCollection[key][i].Contains(",")) {
+					Debug.LogWarning("Value " + logCollection[key] + "from column " + key + "contains comma (,). It has been replaced with a dot.");
+					logCollection[key][i].Replace(',', '.');
+				} else if (logCollection[key][i].Contains(";")) {
+					Debug.LogWarning("Value " + logCollection[key] + "from column " + key + "contains semi-colon (;). It has been replaced with a dash.");
+					logCollection[key][i].Replace(';', '-');
+				} else if (logCollection[key][i].Contains("\"")) {
+					Debug.LogWarning("Value " + logCollection[key] + "from column " + key + "contains quotation mark (\"). It has been replaced with a dash.");
+					logCollection[key][i].Replace('\"', '-');
+				}
 				row.Add(logCollection[key][i]);
 			}
 			if(i != 0) {
@@ -229,10 +255,6 @@ public class ConnectToMySQL : MonoBehaviour {
 		form.AddField ("usernamePost", credentials["username"]);
 		form.AddField ("passwordPost", credentials["password"]);
 		form.AddField ("secHashPost",Md5Sum (credentials["dbSecKey"]));
-
-		foreach(KeyValuePair<string,string> cred in credentials) {
-		Debug.Log(cred.Key + " = " + cred.Value);
-		}
 
         colsHash = Md5Sum(dbCols);
 		form.AddField("db_hash", colsHash);
@@ -257,7 +279,11 @@ public class ConnectToMySQL : MonoBehaviour {
 
 		yield return www.SendWebRequest();
 
+		LogUploadResult logUploadResult = new LogUploadResult();
 		if(www.isNetworkError || www.isHttpError) {
+			logUploadResult.status = LogUploadStatus.Error;
+			logUploadResult.error = www.error;
+			onLogsUploaded.Invoke(logUploadResult);
             Debug.LogError(("Unable to submit logs: " + www.error));
 			if (statusMessage != null) {
 				statusMessage.text = (www.downloadHandler.text);
@@ -279,6 +305,9 @@ public class ConnectToMySQL : MonoBehaviour {
 			// Clear datadump structures in case we are submitting dumped data
 			dataDumps.Clear();
 			colDumps.Clear();
+			logUploadResult.status = LogUploadStatus.Success;
+			logUploadResult.error = "";
+			onLogsUploaded.Invoke(logUploadResult);
 		}
 
 	}
@@ -308,6 +337,11 @@ public class ConnectToMySQL : MonoBehaviour {
 	}
 
 	private void DetectDumpedLogs() {
+		// If no credentials are available, we skip dumplog detection.
+		if (credentials == null) {
+			Debug.LogWarning("No credentials loaded, aborting logdump detection..");
+			return;
+		}
 
 		var fileDumps = Directory.GetFiles(directory, "logdump*");
 
@@ -434,7 +468,7 @@ public class ConnectToMySQL : MonoBehaviour {
 		string[] lines = builtInCredentials.text.Split('\n');
 		foreach (var line in lines) {
 			if (!string.IsNullOrEmpty(line)) {
-				cred = line.Split('=');
+				cred = line.Trim().Split('=');
 				credentials[cred[0]] = cred[1];
 			}
 		}
