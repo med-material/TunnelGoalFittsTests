@@ -70,7 +70,6 @@ public class LoggingManager : MonoBehaviour {
 
 	private static string date;
 	private static string time;
-	private static string dateId;
 
 	private static Dictionary <string, List<string>> logs;
 
@@ -214,7 +213,7 @@ public class LoggingManager : MonoBehaviour {
 
 		date = System.DateTime.Now.ToString("yyyy-MM-dd");
 		time = System.DateTime.Now.ToString("HH:mm:ss:ffff");
-		dateId = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+		string dateId = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
 
 
 		currentEntry = 	date + sep +
