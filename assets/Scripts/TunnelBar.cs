@@ -70,9 +70,9 @@ public class TunnelBar : Target {
         }
     }
 
-    public void SetSize(int width, int height)
+    public void SetPosition(int newpos)
     {
-        this.transform.localScale = new Vector3(width + 200, height, 1);
+        this.transform.position = new Vector3(this.transform.position.x, newpos, this.transform.position.z);
     }
 
     private void PlayFeedback()

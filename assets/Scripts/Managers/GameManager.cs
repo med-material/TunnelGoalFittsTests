@@ -202,6 +202,8 @@ public class GameManager : MonoBehaviour
         }
         customGameInstructions.gameObject.SetActive(false);
         gameType = GameType.Tunnel;
+        S_tunnel = (int) sizeSlider.value;
+        D_tunnel = (int) distanceSlider.value;
         PrepareTunnelGame();
     }
 
@@ -211,6 +213,8 @@ public class GameManager : MonoBehaviour
         }
         customGameInstructions.gameObject.SetActive(false);
         gameType = GameType.Fitts;
+        S_fitts = (int) sizeSlider.value;
+        D_fitts = (int) distanceSlider.value;
         PrepareFittsGame();
     }
 
@@ -220,6 +224,8 @@ public class GameManager : MonoBehaviour
         }
         customGameInstructions.gameObject.SetActive(false);
         gameType = GameType.Goal;
+        S_goal = (int) sizeSlider.value;
+        D_goal = (int) distanceSlider.value;
         PrepareGoalGame();
     }
 
@@ -541,12 +547,12 @@ public class GameManager : MonoBehaviour
     private static void PrepareFittsGame()
     {
         targetAttributes = new Vector4[2];
-        targetAttributes[0].x = -(D_fitts / 2);
+        targetAttributes[0].x = ((D_fitts / 2) + (S_fitts / 2));
         targetAttributes[0].y = 0;
         targetAttributes[0].z = S_fitts;
         targetAttributes[0].w = 100;
 
-        targetAttributes[1].x = (D_fitts / 2);
+        targetAttributes[1].x = -((D_fitts / 2) + (S_fitts / 2));
         targetAttributes[1].y = 0;
         targetAttributes[1].z = S_fitts;
         targetAttributes[1].w = 100;
@@ -584,14 +590,15 @@ public class GameManager : MonoBehaviour
     {
 
         targetAttributes = new Vector4[2];
-        targetAttributes[0].x = -(D_tunnel / 2);
+        var tunnelgoalSize = 3;
+        targetAttributes[0].x = ((D_tunnel / 2) + (tunnelgoalSize / 2));
         targetAttributes[0].y = 0;
-        targetAttributes[0].z = S_tunnel;
+        targetAttributes[0].z = 10;
         targetAttributes[0].w = 100;
 
-        targetAttributes[1].x = (D_tunnel / 2);
+        targetAttributes[1].x = -((D_tunnel / 2) + (tunnelgoalSize / 2));
         targetAttributes[1].y = 0;
-        targetAttributes[1].z = S_tunnel;
+        targetAttributes[1].z = 10;
         targetAttributes[1].w = 100;
 
         Bounds b = CameraBounds();
@@ -612,8 +619,8 @@ public class GameManager : MonoBehaviour
             allTunnelBars[1] = allBarObjects[1].GetComponent<TunnelBar>();
         }
 
-        allTunnelBars[0].SetSize((int)b.extents.x*2, (int)barHeight);
-        allTunnelBars[1].SetSize((int)b.extents.x * 2, (int)barHeight);
+        allTunnelBars[0].SetPosition((int) barPos);
+        allTunnelBars[1].SetPosition((int) -barPos);
 
         Debug.Log("CamRect: " + CameraBounds());
         Debug.Log("allTargetObjects  count: " + allTargetObjects.Length);
@@ -629,23 +636,24 @@ public class GameManager : MonoBehaviour
         }
         for (int i = 0; i < totalTargets; i++) {
             allTargetObjects[i].transform.position = new Vector2(targetAttributes[i].x, targetAttributes[i].y);
-            allTunnelTarget[i].SetSize(5, S_tunnel);
+            allTunnelTarget[i].SetSize(tunnelgoalSize,100);
         }
 
     }
 
     private static void PrepareGoalGame()
     {
+        var tunnelgoalSize = 3;
         targetAttributes = new Vector4[2];
-        targetAttributes[0].x = -(D_goal / 2);
+        targetAttributes[0].x = ((D_goal / 2) + (tunnelgoalSize / 2));
         targetAttributes[0].y = 0;
-        targetAttributes[0].z = 3;
-        targetAttributes[0].w = S_goal;
+        targetAttributes[0].z = S_goal;
+        targetAttributes[0].w = 100;
 
-        targetAttributes[1].x = (D_goal / 2);
+        targetAttributes[1].x = -((D_goal / 2) + (tunnelgoalSize / 2));
         targetAttributes[1].y = 0;
-        targetAttributes[1].z = 3;
-        targetAttributes[1].w = S_goal;
+        targetAttributes[1].z = S_goal;
+        targetAttributes[1].w = 100;
 
         totalTargets = 2;
 
@@ -666,7 +674,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < totalTargets; i++)
         {
             allTargetObjects[i].transform.position = new Vector2(targetAttributes[i].x, targetAttributes[i].y);
-            allGoalTarget[i].SetSize(10, S_goal);
+            allGoalTarget[i].SetSize(tunnelgoalSize,S_goal);
         }
 
 

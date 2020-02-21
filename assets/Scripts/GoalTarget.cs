@@ -14,8 +14,6 @@ public class GoalTarget : Target {
 	private SpriteRenderer bottomSprite;
 
 	private Transform midLine;
-	private Transform topLine;
-	private Transform bottomLine;
 
 	private Vector3 feedbackVector;
     private bool newHit = false;
@@ -34,15 +32,9 @@ public class GoalTarget : Target {
     void Awake() {
 
 		midLine = transform.Find ("MidLine");
-		topLine = transform.Find ("TopLine");
-		bottomLine = transform.Find ("BottomLine");
 
 		midSprite = midLine.GetComponent<SpriteRenderer> ();
-		topSprite = topLine.GetComponent<SpriteRenderer> ();
-		bottomSprite = bottomLine.GetComponent<SpriteRenderer> ();
 		midSprite.color = inactiveColor;
-		topSprite.color = inactiveColor;
-		bottomSprite.color = inactiveColor;
 	}
 
     void Update() {
@@ -51,8 +43,6 @@ public class GoalTarget : Target {
 			if(Time.time - hitTime > animationTime) {
 
 				midSprite.color = inactiveColor;
-				topSprite.color = inactiveColor;
-				bottomSprite.color = inactiveColor;
 
 				feedback = false;
 			}
@@ -75,20 +65,12 @@ public class GoalTarget : Target {
     public new void SetActiveTarget()
     {
         midSprite.color = activeColor;
-        topSprite.color = activeColor;
-        bottomSprite.color = activeColor;
 
     }
 
     public void SetSize(float width, float height) {
 
-		midLine.localScale = new Vector3 (width*0.1f, height, 1);
-        //topLine.localScale = new Vector3(7, 1, 1);
-        topLine.localScale = new Vector3(0, 0, 0);
-		topLine.localPosition = new Vector3 (0, height / 2, 1);
-        //bottomLine.localScale = new Vector3(7, 1, 1);
-        bottomLine.localScale = new Vector3(0, 0, 0);
-        bottomLine.localPosition = new Vector3 (0, -height / 2, 1);
+		midLine.localScale = new Vector3 (width, height, 1);
 	}
 
 	private void PlayFeedback() {
@@ -97,7 +79,5 @@ public class GoalTarget : Target {
 		hitTime = Time.time;
 
 		midSprite.color = feedbackColor;
-		topSprite.color = feedbackColor;
-		bottomSprite.color = feedbackColor;
 	}
 }
