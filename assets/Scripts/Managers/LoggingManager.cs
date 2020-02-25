@@ -100,8 +100,6 @@ public class LoggingManager : MonoBehaviour {
 		
 		{
 			{"Email", new List<string>()},
-			{"Date", new List<string>()},
-			{"Time", new List<string>()},
 			{"GameType", new List<string>()},
 			{"InputType", new List<string>()},
 			{"InputResponders", new List<string>()},
@@ -129,10 +127,12 @@ public class LoggingManager : MonoBehaviour {
 			{"Backtracking", new List<string>()},
 			{"ErrorTargetID", new List<string>()},
 			{"TargetsDistance",new List<string>()},
-			{"DateId", new List<string>()},
-			{"PID", new List<string>()}
-
-
+			{"Timestamp", new List<string>()},
+			{"PID", new List<string>()},
+			{"ObjectWidthCm", new List<string>()},
+			{"ObjectHeightCm", new List<string>()},
+			{"ObjectDistanceCm", new List<string>()},
+			{"TrialNo", new List<string>()}
 		}; 
 
 		var optionsList = Enum.GetNames(typeof(InputResponders)).ToList();
@@ -225,7 +225,7 @@ public class LoggingManager : MonoBehaviour {
 
 		date = System.DateTime.Now.ToString("yyyy-MM-dd");
 		time = System.DateTime.Now.ToString("HH:mm:ss:ffff");
-		string dateId = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+		string dateId = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffff");
 
 
 		currentEntry = 	_userID + sep +
