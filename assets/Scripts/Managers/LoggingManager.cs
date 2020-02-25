@@ -52,15 +52,17 @@ public class LoggingManager : MonoBehaviour {
 
 	public string userID;
 	public string PID;
+	public string TrialNo;
 	public InputResponders inputResponders;
 	public InputType inputType;
 	
 	public static string _PID;
+	public static string _TrialNo;
 	public static string _userID;
 	public static InputResponders _inputResponders;
 	public static InputType _inputType;
 
-	private static string headers = "Date;Time;UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;TargetsDistance;DateId;PID";
+	private static string headers = "UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;TargetsDistance;Timestamp;PID;ObjectWidthCm;ObjectHeightCm;ObjectDistanceCm";
 
 	private static StreamWriter writer;
 	private static string directory;
@@ -86,6 +88,9 @@ public class LoggingManager : MonoBehaviour {
 
 	[SerializeField]
 	private InputField PIDField;
+
+	[SerializeField]
+	private InputField TrialNoField;
 
 	public void Awake() {
 
@@ -183,6 +188,10 @@ public class LoggingManager : MonoBehaviour {
 		_PID = PIDField.text;
 	}
 
+	public void Trial_Changed() {
+		_TrialNo = TrialNoField.text;
+	}
+
 	public void emailField_Changed() {
 		_userID = emailField.text;
 	}
@@ -219,9 +228,7 @@ public class LoggingManager : MonoBehaviour {
 		string dateId = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
 
 
-		currentEntry = 	date + sep +
-						time + sep +
-						_userID + sep +
+		currentEntry = 	_userID + sep +
                         _gameType + sep +
                         _inputType + sep +
                         _inputResponders + sep +
@@ -263,8 +270,6 @@ public class LoggingManager : MonoBehaviour {
 		string b = System.Enum.GetName(typeof(GameType), _gameType);         //To Get the name of the enumerator
 
 		logs["Email"].Add(_userID.ToString());
-		logs["Date"].Add(date);
-		logs["Time"].Add(time);
 		logs["GameType"].Add(System.Enum.GetName(typeof(GameType), _gameType));
 		logs["InputType"].Add(System.Enum.GetName(typeof(InputType), _inputType));
 		logs["InputResponders"].Add(System.Enum.GetName(typeof(InputResponders), _inputResponders));
@@ -292,11 +297,12 @@ public class LoggingManager : MonoBehaviour {
 		logs["Backtracking"].Add(_backtracking.ToString());
 		logs["ErrorTargetID"].Add(_errorTargetID.ToString());
 		logs["TargetsDistance"].Add(_dDist.ToString());
-		logs["DateId"].Add(dateId.ToString());
+		logs["Timestamp"].Add(dateId.ToString());
 		logs["PID"].Add(_PID.ToString());
 		logs["ObjectWidthCm"].Add(_objectWidthCm.ToString());
 		logs["ObjectHeightCm"].Add(_objectHeightCm.ToString());
 		logs["ObjectDistanceCm"].Add(_objectDistanceCm.ToString());
+		logs["TrialNo"].Add(_TrialNo.ToString());
 
 		
 		}
