@@ -35,6 +35,14 @@ public class GameManager : MonoBehaviour
     public int _S_goal;
     public int _rounds;
 
+    public float _targetWidthCm;
+    public float _targetDistanceCm;
+    public float _screenWidthCm;
+    public float _screenHeightCm;
+    public float _objectWidthCm;
+    public float _objectHeightCm;
+    public float _objectDistanceCm;
+
     public bool ArduinoGSR = false;
     public bool ArduinoPulse = false;
 
@@ -53,6 +61,13 @@ public class GameManager : MonoBehaviour
     private static GameObject tunnelBarPrefab;
 
     private static int rounds;
+    private static float targetWidthCm;
+    private static float targetDistanceCm;
+    private static float screenWidthCm;
+    private static float screenHeightCm;
+    private static float objectWidthCm;
+    private static float objectHeightCm;
+    private static float objectDistanceCm;
 
     private static Vector4[] targetAttributes;
     private static AudioClip successClip;
@@ -104,6 +119,11 @@ public class GameManager : MonoBehaviour
     private Slider roundsSlider;
 
     [SerializeField]
+    private InputField screenWidthinput;
+    [SerializeField]
+    private InputField screenHeightInput;
+
+    [SerializeField]
     private InputManager inputManager;
     
     [SerializeField]
@@ -140,6 +160,8 @@ public class GameManager : MonoBehaviour
         uicanvas = _uicanvas;
 
         rounds = _rounds;
+        targetWidthCm = _targetWidthCm;
+        targetDistanceCm = _targetDistanceCm;
         successClip = _successClip;
         errorClip = _errorClip;
         missClip = _missClip;
@@ -175,6 +197,14 @@ public class GameManager : MonoBehaviour
         D_goal = (int) distanceSlider.value;
         D_tunnel = (int) distanceSlider.value;
         rounds = (int) roundsSlider.value;
+
+        screenWidthCm = (Screen.width / Screen.dpi) * 2.54f;
+		Debug.Log("width: " + Screen.width + ", dpi:" + Screen.dpi + ", widthCm: " +screenWidthCm);
+		screenHeightCm = (Screen.height / Screen.dpi) * 2.54f;
+		Debug.Log("height: " + Screen.height + ", dpi:" + Screen.dpi + ", heightCm: " +screenHeightCm);
+        screenWidthinput.text = screenWidthCm.ToString("0.00");
+        screenHeightInput.text = screenHeightCm.ToString("0.00"); 
+
         PrepareGoalGame();
     }
 
@@ -237,6 +267,14 @@ public class GameManager : MonoBehaviour
         PrepareCustomGame();
     }
 
+    public void screenWidth_onInputChanged(string text) {
+        screenWidthCm = float.Parse(text);
+    }
+
+    public void screenHeight_onInputChanged(string text) {
+        screenHeightCm = float.Parse(text);
+    }
+
     public void size_onSliderChanged() {
         sizeNumber.text = ((int)sizeSlider.value).ToString();
 
@@ -270,6 +308,7 @@ public class GameManager : MonoBehaviour
         roundsNumber.text = ((int)roundsSlider.value).ToString();
         rounds = (int)roundsSlider.value;
     }
+
     public static bool GetInGame()
     {
 
@@ -541,7 +580,10 @@ public class GameManager : MonoBehaviour
             outsetHit,
             backtracking,
             errorTargetID,
-            dist);
+            dist,
+            objectWidthCm,
+            objectHeightCm,
+            objectDistanceCm);
     }
 
     private static void PrepareFittsGame()
@@ -576,6 +618,9 @@ public class GameManager : MonoBehaviour
             allTargetObjects[i].transform.position = new Vector2(targetAttributes[i].x, targetAttributes[i].y);
             allFittsTarget[i].SetSize(S_fitts, 100);
         }
+        CalculateWidthCm(allTargetObjects[0].GetComponentsInChildren<Renderer>()[0].bounds);
+        CalculateHeightCm(allTargetObjects[0].GetComponentsInChildren<Renderer>()[0].bounds);
+        CalculateDistanceCm(allTargetObjects[0].GetComponentsInChildren<Renderer>()[0].bounds, allTargetObjects[1].GetComponentsInChildren<Renderer>()[0].bounds);
     }
 
     private static Bounds CameraBounds()
@@ -585,6 +630,55 @@ public class GameManager : MonoBehaviour
         Bounds bounds = new Bounds(Camera.main.transform.position, new Vector3(camHeight * ar, camHeight, 0));
         return bounds;
     }
+
+    private static void CalculateWidthCm(Bounds bounds)
+    {
+        Debug.Log("minBounds: " + bounds.min.x);
+        Debug.Log("maxBounds: " + bounds.max.x);
+        Vector3 origin = Camera.main.WorldToScreenPoint(new Vector3(bounds.min.x, bounds.max.y, 0f));
+        Vector3 extent = Camera.main.WorldToScreenPoint(new Vector3(bounds.max.x, bounds.min.y, 0f));
+		//Vector3 minBoundsScreen = Camera.main.WorldToScreenPoint(bounds.min);
+        //Vector3 maxBoundsScreen = Camera.main.WorldToScreenPoint(bounds.max);
+        Debug.Log("origin: " + origin.ToString());
+        Debug.Log("extent: " + extent.ToString());
+        float objectWidthScreen = extent.x - origin.x;
+        float objectWidthInches = objectWidthScreen / Screen.dpi;
+        objectWidthCm = objectWidthInches * 2.54f;
+        Debug.Log("objectWidthScreen: " + objectWidthScreen + ", objectWidthInches: " + objectWidthInches + ", objectWidthCm: " + objectWidthCm);
+    }
+
+    private static void CalculateHeightCm(Bounds bounds)
+    {
+        Debug.Log("minBounds: " + bounds.min.y);
+        Debug.Log("maxBounds: " + bounds.max.y);
+        Vector3 origin = Camera.main.WorldToScreenPoint(new Vector3(bounds.max.x, bounds.min.y, 0f));
+        Vector3 extent = Camera.main.WorldToScreenPoint(new Vector3(bounds.min.x, bounds.max.y, 0f));
+		//Vector3 minBoundsScreen = Camera.main.WorldToScreenPoint(bounds.min);
+        //Vector3 maxBoundsScreen = Camera.main.WorldToScreenPoint(bounds.max);
+        Debug.Log("origin: " + origin.ToString());
+        Debug.Log("extent: " + extent.ToString());
+        float objectHeightScreen = extent.y - origin.y;
+        float objectHeightInches = objectHeightScreen / Screen.dpi;
+        objectHeightCm = objectHeightInches * 2.54f;
+        Debug.Log("objectHeightScreen: " + objectHeightScreen + ", objectHeightInches: " + objectHeightInches + ", objectHeightCm: " + objectHeightCm);
+    }
+
+    private static void CalculateDistanceCm(Bounds bounds2, Bounds bounds1)
+    {
+        Debug.Log("minBounds: " + bounds1.max.x);
+        Debug.Log("maxBounds: " + bounds2.min.x);
+        Vector3 origin = Camera.main.WorldToScreenPoint(new Vector3(bounds1.max.x, bounds1.min.y, 0f));
+        Vector3 extent = Camera.main.WorldToScreenPoint(new Vector3(bounds2.min.x, bounds2.max.y, 0f));
+		//Vector3 minBoundsScreen = Camera.main.WorldToScreenPoint(bounds.min);
+        //Vector3 maxBoundsScreen = Camera.main.WorldToScreenPoint(bounds.max);
+        Debug.Log("origin: " + origin.ToString());
+        Debug.Log("extent: " + extent.ToString());
+        float objectDistanceScreen = extent.x - origin.x;
+        float objectDistanceInches = objectDistanceScreen / Screen.dpi;
+        objectDistanceCm = objectDistanceInches * 2.54f;
+        Debug.Log("objectDistanceScreen: " + objectDistanceScreen + ", objectDistanceInches: " + objectDistanceInches + ", objectDistanceCm: " + objectDistanceCm);
+    }
+
 
     private static void PrepareTunnelGame()
     {
@@ -639,6 +733,13 @@ public class GameManager : MonoBehaviour
             allTunnelTarget[i].SetSize(tunnelgoalSize,100);
         }
 
+        CalculateWidthCm(allTargetObjects[0].GetComponentsInChildren<Renderer>()[0].bounds);
+        Bounds upper_bound = allTunnelBars[0].GetComponentsInChildren<Renderer>()[0].bounds;
+        Bounds lower_bound = allTunnelBars[1].GetComponentsInChildren<Renderer>()[0].bounds;
+        Bounds tunnel_bounds = new Bounds(new Vector3(0,0,0), new Vector3(Mathf.Abs(upper_bound.min.x - upper_bound.max.x), Mathf.Abs(upper_bound.min.y - lower_bound.max.y), 0f));
+        CalculateHeightCm(tunnel_bounds);
+        CalculateDistanceCm(allTargetObjects[0].GetComponentsInChildren<Renderer>()[0].bounds, allTargetObjects[1].GetComponentsInChildren<Renderer>()[0].bounds);
+
     }
 
     private static void PrepareGoalGame()
@@ -676,6 +777,10 @@ public class GameManager : MonoBehaviour
             allTargetObjects[i].transform.position = new Vector2(targetAttributes[i].x, targetAttributes[i].y);
             allGoalTarget[i].SetSize(tunnelgoalSize,S_goal);
         }
+
+        CalculateWidthCm(allTargetObjects[0].GetComponentsInChildren<Renderer>()[0].bounds);
+        CalculateHeightCm(allTargetObjects[0].GetComponentsInChildren<Renderer>()[0].bounds);
+        CalculateDistanceCm(allTargetObjects[0].GetComponentsInChildren<Renderer>()[0].bounds, allTargetObjects[1].GetComponentsInChildren<Renderer>()[0].bounds);
 
 
     }

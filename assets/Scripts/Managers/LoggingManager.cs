@@ -209,7 +209,10 @@ public class LoggingManager : MonoBehaviour {
 	                     Vector2 _outsetHit,
 						 bool _backtracking,
 						 int _errorTargetID,
-						 int _dDist) {
+						 int _dDist,
+						 float _objectWidthCm,
+						 float _objectHeightCm,
+						 float _objectDistanceCm) {
 
 		date = System.DateTime.Now.ToString("yyyy-MM-dd");
 		time = System.DateTime.Now.ToString("HH:mm:ss:ffff");
@@ -246,8 +249,11 @@ public class LoggingManager : MonoBehaviour {
 						_backtracking + sep +
 						_errorTargetID + sep +
 						_dDist + sep +
-						dateId +
-						_PID;
+						dateId + sep +
+						_PID + sep +
+						_objectWidthCm + sep +
+						_objectHeightCm + sep +
+						_objectDistanceCm;
 
 		using (StreamWriter writer = File.AppendText(directory + fileName))
 		{
@@ -288,6 +294,9 @@ public class LoggingManager : MonoBehaviour {
 		logs["TargetsDistance"].Add(_dDist.ToString());
 		logs["DateId"].Add(dateId.ToString());
 		logs["PID"].Add(_PID.ToString());
+		logs["ObjectWidthCm"].Add(_objectWidthCm.ToString());
+		logs["ObjectHeightCm"].Add(_objectHeightCm.ToString());
+		logs["ObjectDistanceCm"].Add(_objectDistanceCm.ToString());
 
 		
 		}
