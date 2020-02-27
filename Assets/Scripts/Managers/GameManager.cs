@@ -39,6 +39,7 @@ public class GameManager : MonoBehaviour
     public float _targetDistanceCm;
     public float _screenWidthCm;
     public float _screenHeightCm;
+    public float _screenDPICm;
     public float _objectWidthCm;
     public float _objectHeightCm;
     public float _objectDistanceCm;
@@ -65,6 +66,7 @@ public class GameManager : MonoBehaviour
     private static float targetDistanceCm;
     private static float screenWidthCm;
     private static float screenHeightCm;
+    private static float screenDPI;
     private static float objectWidthCm;
     private static float objectHeightCm;
     private static float objectDistanceCm;
@@ -122,6 +124,9 @@ public class GameManager : MonoBehaviour
     private InputField screenWidthinput;
     [SerializeField]
     private InputField screenHeightInput;
+
+    [SerializeField]
+    private InputField screenDPIInput;
 
     [SerializeField]
     private InputManager inputManager;
@@ -204,6 +209,7 @@ public class GameManager : MonoBehaviour
 		Debug.Log("height: " + Screen.height + ", dpi:" + Screen.dpi + ", heightCm: " +screenHeightCm);
         screenWidthinput.text = screenWidthCm.ToString("0.00");
         screenHeightInput.text = screenHeightCm.ToString("0.00"); 
+        screenDPI = Screen.dpi;
 
         PrepareGoalGame();
     }
@@ -268,11 +274,30 @@ public class GameManager : MonoBehaviour
     }
 
     public void screenWidth_onInputChanged(string text) {
+        if (text != "") {
+        Debug.Log(text);
         screenWidthCm = float.Parse(text);
+        } else {
+            screenWidthinput.text = "-1";
+        }
     }
 
+    public void screenDPI_onInputChanged(string text) {
+        if (text != "") {
+        Debug.Log(text);
+        screenDPI = float.Parse(text);
+        } else {
+            screenDPIInput.text = "-1";
+        }
+    }    
+
     public void screenHeight_onInputChanged(string text) {
+        if (text != "") {
+        Debug.Log(text);
         screenHeightCm = float.Parse(text);
+        } else {
+            screenHeightInput.text = "-1";
+        }
     }
 
     public void size_onSliderChanged() {
@@ -642,7 +667,11 @@ public class GameManager : MonoBehaviour
         Debug.Log("origin: " + origin.ToString());
         Debug.Log("extent: " + extent.ToString());
         float objectWidthScreen = extent.x - origin.x;
-        float objectWidthInches = objectWidthScreen / Screen.dpi;
+        if (screenDPI == 0f) {
+            objectWidthCm = -1f;
+            return;
+        }
+        float objectWidthInches = objectWidthScreen / screenDPI;
         objectWidthCm = objectWidthInches * 2.54f;
         Debug.Log("objectWidthScreen: " + objectWidthScreen + ", objectWidthInches: " + objectWidthInches + ", objectWidthCm: " + objectWidthCm);
     }
@@ -658,7 +687,11 @@ public class GameManager : MonoBehaviour
         Debug.Log("origin: " + origin.ToString());
         Debug.Log("extent: " + extent.ToString());
         float objectHeightScreen = extent.y - origin.y;
-        float objectHeightInches = objectHeightScreen / Screen.dpi;
+        if (screenDPI == 0f) {
+            objectHeightCm = -1f;
+            return;
+        }        
+        float objectHeightInches = objectHeightScreen / screenDPI;
         objectHeightCm = objectHeightInches * 2.54f;
         Debug.Log("objectHeightScreen: " + objectHeightScreen + ", objectHeightInches: " + objectHeightInches + ", objectHeightCm: " + objectHeightCm);
     }
@@ -674,7 +707,11 @@ public class GameManager : MonoBehaviour
         Debug.Log("origin: " + origin.ToString());
         Debug.Log("extent: " + extent.ToString());
         float objectDistanceScreen = extent.x - origin.x;
-        float objectDistanceInches = objectDistanceScreen / Screen.dpi;
+        if (screenDPI == 0f) {
+            objectDistanceCm = -1f;
+            return;
+        }
+        float objectDistanceInches = objectDistanceScreen / screenDPI;
         objectDistanceCm = objectDistanceInches * 2.54f;
         Debug.Log("objectDistanceScreen: " + objectDistanceScreen + ", objectDistanceInches: " + objectDistanceInches + ", objectDistanceCm: " + objectDistanceCm);
     }
