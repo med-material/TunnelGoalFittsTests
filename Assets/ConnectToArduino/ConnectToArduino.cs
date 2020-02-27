@@ -123,6 +123,20 @@ public class ConnectToArduino : MonoBehaviour
         }
     }
 
+    public void SkipPressed() {
+        string regex = @"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$)";
+        var match = Regex.Match(emailInputField.text, regex, RegexOptions.IgnoreCase);
+        if (!match.Success)
+        {
+            connectStatus.text = "Please Enter a valid E-mail address.";
+            connectStatus.color = errorColor;
+            emailInputField.image.color = inputfieldErrorColor;
+            return;
+        }
+        email = emailInputField.text;
+        RedirectToScene();       
+    }
+
     public void ConnectPressed() {
         connectStatus.text = "Connecting...";
         string regex = @"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$)";
@@ -149,7 +163,7 @@ public class ConnectToArduino : MonoBehaviour
 
         UnityEngine.Debug.Log(sanitizedSerialPort);
         UnityEngine.Debug.Log(sanitizedBaudRate);
-        serialport = new SerialPort (@"\\.\"+sanitizedSerialPort, sanitizedBaudRate);
+        serialport = new SerialPort (sanitizedSerialPort, sanitizedBaudRate);
         email = emailInputField.text;
         connectingToArduino = true;
         bool connected = OpenConnection();
