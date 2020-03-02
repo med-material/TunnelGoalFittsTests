@@ -642,9 +642,13 @@ public class GameManager : MonoBehaviour
         Debug.Log("origin: " + origin.ToString());
         Debug.Log("extent: " + extent.ToString());
         float objectWidthScreen = extent.x - origin.x;
-        float objectWidthInches = objectWidthScreen / Screen.dpi;
-        objectWidthCm = objectWidthInches * 2.54f;
-        Debug.Log("objectWidthScreen: " + objectWidthScreen + ", objectWidthInches: " + objectWidthInches + ", objectWidthCm: " + objectWidthCm);
+        if (screenWidthCm != -1f) {
+            float centimetersPerPixel = screenWidthCm / Screen.width;
+            objectWidthCm = objectWidthScreen * centimetersPerPixel;
+        } else {
+            objectWidthCm = -1f;
+        }
+        Debug.Log("objectWidthScreen: " + objectWidthScreen + ", Screen.width: " + Screen.width + ", objectWidthCm: " + objectWidthCm);
     }
 
     private static void CalculateHeightCm(Bounds bounds)
@@ -658,9 +662,13 @@ public class GameManager : MonoBehaviour
         Debug.Log("origin: " + origin.ToString());
         Debug.Log("extent: " + extent.ToString());
         float objectHeightScreen = extent.y - origin.y;
-        float objectHeightInches = objectHeightScreen / Screen.dpi;
-        objectHeightCm = objectHeightInches * 2.54f;
-        Debug.Log("objectHeightScreen: " + objectHeightScreen + ", objectHeightInches: " + objectHeightInches + ", objectHeightCm: " + objectHeightCm);
+        if (screenHeightCm != -1f) {
+            float centimetersPerPixel = screenHeightCm / Screen.height;
+            objectHeightCm = objectHeightScreen * centimetersPerPixel;
+        } else {
+            objectHeightCm = -1f;
+        }
+        Debug.Log("objectHeightScreen: " + objectHeightScreen + ", screen.height: " + Screen.height + ", objectHeightCm: " + objectHeightCm);
     }
 
     private static void CalculateDistanceCm(Bounds bounds2, Bounds bounds1)
@@ -674,9 +682,13 @@ public class GameManager : MonoBehaviour
         Debug.Log("origin: " + origin.ToString());
         Debug.Log("extent: " + extent.ToString());
         float objectDistanceScreen = extent.x - origin.x;
-        float objectDistanceInches = objectDistanceScreen / Screen.dpi;
-        objectDistanceCm = objectDistanceInches * 2.54f;
-        Debug.Log("objectDistanceScreen: " + objectDistanceScreen + ", objectDistanceInches: " + objectDistanceInches + ", objectDistanceCm: " + objectDistanceCm);
+        if (screenWidthCm != -1f) {
+            float centimetersPerPixel = screenWidthCm / Screen.width;
+            objectDistanceCm = objectDistanceScreen * centimetersPerPixel;
+        } else {
+            objectDistanceCm = -1f;
+        }
+        Debug.Log("objectDistanceScreen: " + objectDistanceScreen + ", screen.width: " + Screen.width + ", objectDistanceCm: " + objectDistanceCm);
     }
 
 
