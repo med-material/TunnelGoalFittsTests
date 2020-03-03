@@ -21,9 +21,11 @@ public class FittsTarget : Target
 	[SerializeField]
 	private Color feedbackColor;
 
+    private GameManager gameManager;
 
     void Awake()
     {
+        gameManager = GameObject.Find("Managers").GetComponent<GameManager>();
         sprite = this.GetComponent<SpriteRenderer>();
         sprite.color = inactiveColor;
     }
@@ -47,14 +49,14 @@ public class FittsTarget : Target
 
     public void Hit()
     {
-        if (GameManager.GetCurrentTarget() == targetID)
+        if (gameManager.GetCurrentTarget() == targetID)
         {
-            GameManager.SuccesfulHit();
+            gameManager.SuccesfulHit();
             PlayFeedback();
         }
         else
         {
-            GameManager.ErrorHit(targetID);
+            gameManager.ErrorHit(targetID);
         }
     }
 

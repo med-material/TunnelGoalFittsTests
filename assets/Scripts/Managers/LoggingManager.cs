@@ -95,7 +95,8 @@ public class LoggingManager : MonoBehaviour {
 	public void Awake() {
 
 		connectToMySQL = FindObjectOfType<ConnectToMySQL>();
-
+		_PID = "1";
+		_TrialNo = "1";
 		logs = new Dictionary<string, List<string>>() //create a new dictionary
 		
 		{
@@ -203,7 +204,7 @@ public class LoggingManager : MonoBehaviour {
 	public void onInputResponder_Changed() {
 		_inputResponders = (InputResponders) inputResponderDropdown.value;
 	}
-	public static void NewEntry(GameType _gameType, 
+	public void NewEntry(GameType _gameType, 
 
 						 string _hitType,
 	                     int _targetNumber,
@@ -325,7 +326,7 @@ public class LoggingManager : MonoBehaviour {
 		}
 		}
 
-	public static void NewLog() {
+	public void NewLog() {
 		/*
 		fileName = System.DateTime.Now.ToString() + ".csv";
 		fileName = fileName.Replace ('/', '-');

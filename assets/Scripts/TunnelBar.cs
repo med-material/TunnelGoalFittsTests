@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TunnelBar : Target {
 
@@ -12,8 +13,15 @@ public class TunnelBar : Target {
     private SpriteRenderer sprite;
     private bool newHit = false;
 
+    private GameManager gameManager;
+
+    private Dropdown inputDropdown;
+    
+
     void Awake()
     {
+        gameManager = GameObject.Find("Managers").GetComponent<GameManager>();
+        inputDropdown = GameObject.Find("InputTypeDropdown").GetComponent<Dropdown>();
         sprite = this.GetComponent<SpriteRenderer>();
         sprite.color = Color.gray;
     }
@@ -24,19 +32,26 @@ public class TunnelBar : Target {
         {
             if (Time.time - hitTime > animationTime)
             {
-                sprite.color = Color.white;
+                sprite.color = Color.gray;
 
                 feedback = false;
             }
         }
     }
+
     private void OnMouseEnter()
     {
+        if (inputDropdown.value == (int) InputType.pressuresensor) {
+            return;
+        }
         newHit = true;
     }
 
     private void OnMouseExit()
     {
+        if (inputDropdown.value == (int) InputType.pressuresensor) {
+            return;
+        }
         newHit = false;
     }
 
@@ -59,14 +74,14 @@ public class TunnelBar : Target {
 
     public void Cross()
     {
-        if (GameManager.GetCurrentTarget() == targetID)
+        if (gameManager.GetCurrentTarget() == targetID)
         {
-            GameManager.SuccesfulHit();
+            gameManager.SuccesfulHit();
             PlayFeedback();
         }
         else
         {
-            GameManager.ErrorHit(targetID);
+            gameManager.ErrorHit(targetID);
         }
     }
 
@@ -75,7 +90,7 @@ public class TunnelBar : Target {
         this.transform.position = new Vector3(this.transform.position.x, newpos, this.transform.position.z);
     }
 
-    private void PlayFeedback()
+    public void PlayFeedback()
     {
         feedback = true;
         hitTime = Time.time;

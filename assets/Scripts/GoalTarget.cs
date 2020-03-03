@@ -27,9 +27,11 @@ public class GoalTarget : Target {
 	[SerializeField]
 	private Color feedbackColor;
 
+	private GameManager gameManager;
 
 
     void Awake() {
+		gameManager = GameObject.Find("Managers").GetComponent<GameManager>();
 
 		midLine = transform.Find ("MidLine");
 
@@ -51,14 +53,14 @@ public class GoalTarget : Target {
 
 	public void Cross() {
 
-		if (GameManager.GetCurrentTarget () == targetID) {
+		if (gameManager.GetCurrentTarget () == targetID) {
 
-			GameManager.SuccesfulHit();
+			gameManager.SuccesfulHit();
 			PlayFeedback();
 		}
 		else {
 			// Do Nothing 
-			// GameManager.ErrorHit(targetID);
+			// gameManager.ErrorHit(targetID);
 		}
 	}
 

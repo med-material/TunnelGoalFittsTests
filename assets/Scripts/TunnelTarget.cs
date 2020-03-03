@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TunnelTarget : Target {
 
@@ -21,9 +22,14 @@ public class TunnelTarget : Target {
 	[SerializeField]
 	private Color feedbackColor;
 
+    private GameManager gameManager;
+
+    private Dropdown inputDropdown;
 
     void Awake()
     {
+        gameManager = GameObject.Find("Managers").GetComponent<GameManager>();
+
         sprite = this.GetComponent<SpriteRenderer>();
         sprite.color = inactiveColor;
     }
@@ -40,7 +46,7 @@ public class TunnelTarget : Target {
             }
         }
     }
-    private void OnMouseEnter()
+    /*private void OnMouseEnter()
     {
         newHit = true;
     }
@@ -48,7 +54,7 @@ public class TunnelTarget : Target {
     private void OnMouseExit()
     {
         newHit = false;
-    }
+    }*/
 
     public void DeactivateHit()
     {
@@ -69,15 +75,15 @@ public class TunnelTarget : Target {
 
     public void Cross()
     {
-        if (GameManager.GetCurrentTarget() == targetID)
+        if (gameManager.GetCurrentTarget() == targetID)
         {
-            GameManager.SuccesfulHit();
+            gameManager.SuccesfulHit();
             PlayFeedback();
         }
         else
         {
             // Do Nothing
-            // GameManager.ErrorHit(targetID);
+            // gameManager.ErrorHit(targetID);
         }
     }
 

@@ -50,58 +50,58 @@ public class GameManager : MonoBehaviour
     public AudioClip _errorClip;
     public AudioClip _missClip;
 
-    private static int D_fitts, S_fitts;
-    private static int D_tunnel, S_tunnel;
-    private static int D_goal, S_goal;
-    private static GameType gameType;
+    private int D_fitts, S_fitts;
+    private int D_tunnel, S_tunnel;
+    private int D_goal, S_goal;
+    private GameType gameType;
 
-    private static GameObject fittsTargetPrefab;
-    private static GameObject tunnelTargetPrefab;
-    private static GameObject goalTargetPrefab;
-    private static GameObject tunnelBarPrefab;
+    private GameObject fittsTargetPrefab;
+    private GameObject tunnelTargetPrefab;
+    private GameObject goalTargetPrefab;
+    private GameObject tunnelBarPrefab;
 
-    private static int rounds;
-    private static float targetWidthCm;
-    private static float targetDistanceCm;
-    private static float screenWidthCm;
-    private static float screenHeightCm;
-    private static float objectWidthCm;
-    private static float objectHeightCm;
-    private static float objectDistanceCm;
+    private int rounds;
+    private float targetWidthCm;
+    private float targetDistanceCm;
+    private float screenWidthCm;
+    private float screenHeightCm;
+    private float objectWidthCm;
+    private float objectHeightCm;
+    private float objectDistanceCm;
 
-    private static Vector4[] targetAttributes;
-    private static AudioClip successClip;
-    private static AudioClip errorClip;
-    private static AudioClip missClip;
+    private Vector4[] targetAttributes;
+    private AudioClip successClip;
+    private AudioClip errorClip;
+    private AudioClip missClip;
 
-    private static bool inGame = false;
+    private bool inGame = false;
 
-    private static FittsTarget[] allFittsTarget;
-    private static GoalTarget[] allGoalTarget;
-    private static TunnelTarget[] allTunnelTarget;
-    private static TunnelBar[] allTunnelBars;
-    private static GameObject[] allTargetObjects;
-    private static GameObject[] allBarObjects;
+    private FittsTarget[] allFittsTarget;
+    private GoalTarget[] allGoalTarget;
+    private TunnelTarget[] allTunnelTarget;
+    private TunnelBar[] allTunnelBars;
+    private GameObject[] allTargetObjects;
+    private GameObject[] allBarObjects;
 
-    private static int totalTargets;
-    private static int currentTarget;
-    private static int currentRound;
-    private static int errorTargetID;
+    private int totalTargets;
+    private int currentTarget;
+    private int currentRound;
+    private int errorTargetID;
 
-    private static AudioSource missSound;
-    private static AudioSource successSound;
-    private static AudioSource errorSound;
+    private AudioSource missSound;
+    private AudioSource successSound;
+    private AudioSource errorSound;
 
-    private static float startTime;
-    private static float hitTime;
-    private static Vector2 hitPos;
-    private static Vector2 outsetTarget;
-    private static Vector2 outsetHit;
-    private static Vector2 lastSuccessfulHit;
-    private static int targetNumber;
-    private static Vector3 diameterVector;
+    private float startTime;
+    private float hitTime;
+    private Vector2 hitPos;
+    private Vector2 outsetTarget;
+    private Vector2 outsetHit;
+    private Vector2 lastSuccessfulHit;
+    private int targetNumber;
+    private Vector3 diameterVector;
 
-    private static bool backtracking = false;
+    private bool backtracking = false;
     
     // UI
     [SerializeField]
@@ -128,14 +128,20 @@ public class GameManager : MonoBehaviour
     
     [SerializeField]
     private GameObject _uicanvas;
-    private static GameObject uicanvas;
+    private GameObject uicanvas;
 
    [SerializeField]
     private Text customGameInstructions;
 
     private string GameInstructionsTemplate;
 
-    private static string dateId = "";
+    private string dateId = "";
+
+    public LoggingManager _loggingManager;
+    private LoggingManager loggingManager;
+
+    [SerializeField]
+    private Cursor cursor;
 
     void Awake()
     {
@@ -156,6 +162,7 @@ public class GameManager : MonoBehaviour
         S_tunnel = _S_tunnel;
         D_goal = _D_goal;
         S_goal = _S_goal;
+        loggingManager = _loggingManager;
 
         uicanvas = _uicanvas;
 
@@ -309,13 +316,13 @@ public class GameManager : MonoBehaviour
         rounds = (int)roundsSlider.value;
     }
 
-    public static bool GetInGame()
+    public bool GetInGame()
     {
 
         return inGame;
     }
 
-    public static GameType GetGameType()
+    public GameType GetGameType()
     {
 
         return gameType;
@@ -323,7 +330,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-
+        cursor.gameObject.SetActive(true);
+        cursor.ResetPosition();
         if (gameType == GameType.Fitts)
             PrepareFittsGame();
         else if (gameType == GameType.Tunnel)
@@ -339,7 +347,8 @@ public class GameManager : MonoBehaviour
         {
             inGame = true;
             //startButton.Disappear();
-            LoggingManager.NewLog();
+            loggingManager.NewLog();
+            //LoggingManager.NewLog();
             startTime = Time.time;
             hitTime = Time.time;
 
@@ -349,7 +358,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private static void LoadAutomateJSON()
+    private void LoadAutomateJSON()
     {
         // Path.Combine combines strings into a file path
         // Application.StreamingAssets points to Assets/StreamingAssets in the Editor, and the StreamingAssets folder in a build
@@ -368,9 +377,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public static void EndGame()
+    public void EndGame()
     {
-
+        cursor.gameObject.SetActive(false);
         inGame = false;
         //startButton.Appear();
         for (int i = 0; i < allTargetObjects.Length; i++)
@@ -391,10 +400,10 @@ public class GameManager : MonoBehaviour
         allBarObjects = null;
         allTargetObjects = null;
 
-        GameObject.Find("Managers").GetComponent<LoggingManager>().sendLogs();
+        loggingManager.sendLogs();
     }
 
-    public static void ReturnMainMenu() {
+    public void ReturnMainMenu() {
         uicanvas.SetActive(true);
 
         if (gameType == GameType.Fitts)
@@ -405,13 +414,13 @@ public class GameManager : MonoBehaviour
             PrepareGoalGame();
     }
 
-    public static int GetCurrentTarget()
+    public int GetCurrentTarget()
     {
 
         return currentTarget;
     }
 
-    public static void SuccesfulHit()
+    public void SuccesfulHit()
     {
         successSound.Play();
 
@@ -453,17 +462,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public static void ErrorHit(int _errorHitID)
+    public void ErrorHit(int _errorHitID)
     {
 
-        errorSound.Play();
+        //errorSound.Play();
 
         errorTargetID = _errorHitID;
 
         MakeLogEntry("Error");
     }
 
-    public static void Miss()
+    public void Miss()
     {
 
         missSound.Play();
@@ -474,14 +483,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public static void OutOfTunnel()
+    public void OutOfTunnel()
     {
 
         errorSound.Play();
         MakeLogEntry("LeftTunnel");
     }
 
-    public static void BackTrack()
+    public void BackTrack()
     {
 
         if (!backtracking)
@@ -505,47 +514,47 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public static void SetHitPosition(Vector2 _hitPos)
+    public void SetHitPosition(Vector2 _hitPos)
     {
 
         outsetHit = hitPos;
         hitPos = _hitPos;
     }
 
-    public static Vector4 GetTargetAttributes(int _index)
+    public Vector4 GetTargetAttributes(int _index)
     {
 
         return targetAttributes[_index];
     }
 
-    public static FittsTarget GetFittsTarget(int _targetNumber)
+    public FittsTarget GetFittsTarget(int _targetNumber)
     {
 
         return allFittsTarget[_targetNumber];
     }
 
-    public static GoalTarget GetGoalTarget(int _targetNumber)
+    public GoalTarget GetGoalTarget(int _targetNumber)
     {
         return allGoalTarget[_targetNumber];
     }
 
-    public static TunnelTarget GetTunnelTarget(int _targetNumber)
+    public TunnelTarget GetTunnelTarget(int _targetNumber)
     {
         return allTunnelTarget[_targetNumber];
     }
 
-    public static int GetTotalTargets()
+    public int GetTotalTargets()
     {
 
         return totalTargets;
     }
 
-    public static TunnelBar GetTunnelBars(int _barNum)
+    public TunnelBar GetTunnelBars(int _barNum)
     {
         return allTunnelBars[_barNum];
     }
 
-    private static void MakeLogEntry(string _hitType)
+    private void MakeLogEntry(string _hitType)
     {
 
         int dist = -1;
@@ -565,9 +574,28 @@ public class GameManager : MonoBehaviour
             dist = D_goal;
         }
 
-        
+        //Debug.Log("gametype: " + gameType);
+        //Debug.Log("hittype: " + _hitType);
+        //Debug.Log("targetnumber: " + targetNumber);
+        //Debug.Log("currenttarget: " + currentTarget);
+        //Debug.Log("time minus start: " + (Time.time - startTime).ToString());
+        //Debug.Log("time minus hit: " + (Time.time - hitTime).ToString());
+        //Debug.Log("alltargetobjects transform pos: " + allTargetObjects[currentTarget].transform.position);
+        //Debug.Log("hit pos: " + hitPos);
+        //Debug.Log("targetatt current target z: " + targetAttributes[currentTarget].z);
+        //Debug.Log("targetatt current target w: " + targetAttributes[currentTarget].w);
+        //Debug.Log("outsettarget: " + outsetTarget);
+        //Debug.Log("outsethit: " + outsetHit);
+        //Debug.Log("backtracking: " + backtracking);
+        //Debug.Log("errortargetid: " + errorTargetID);
+        //Debug.Log("dist: " + dist);
+        //Debug.Log("objwidthcm: " + objectWidthCm);
+        //Debug.Log("objheightcm: " + objectHeightCm);
+        //Debug.Log("objdistcm: " + objectDistanceCm);
+        //Debug.Log("LoggingManager: " + loggingManager);
 
-        LoggingManager.NewEntry(gameType, _hitType,
+
+        loggingManager.NewEntry(gameType, _hitType,
             targetNumber,
             currentTarget,
             Time.time - startTime,
@@ -586,7 +614,7 @@ public class GameManager : MonoBehaviour
             objectDistanceCm);
     }
 
-    private static void PrepareFittsGame()
+    private void PrepareFittsGame()
     {
         targetAttributes = new Vector4[2];
         targetAttributes[0].x = ((D_fitts / 2) + (S_fitts / 2));
@@ -623,7 +651,7 @@ public class GameManager : MonoBehaviour
         CalculateDistanceCm(allTargetObjects[0].GetComponentsInChildren<Renderer>()[0].bounds, allTargetObjects[1].GetComponentsInChildren<Renderer>()[0].bounds);
     }
 
-    private static Bounds CameraBounds()
+    private Bounds CameraBounds()
     {
         float ar = (float)Screen.width / (float)Screen.height;
         float camHeight = Camera.main.orthographicSize * 2;
@@ -631,16 +659,16 @@ public class GameManager : MonoBehaviour
         return bounds;
     }
 
-    private static void CalculateWidthCm(Bounds bounds)
+    private void CalculateWidthCm(Bounds bounds)
     {
-        Debug.Log("minBounds: " + bounds.min.x);
-        Debug.Log("maxBounds: " + bounds.max.x);
+        //Debug.Log("minBounds: " + bounds.min.x);
+        //Debug.Log("maxBounds: " + bounds.max.x);
         Vector3 origin = Camera.main.WorldToScreenPoint(new Vector3(bounds.min.x, bounds.max.y, 0f));
         Vector3 extent = Camera.main.WorldToScreenPoint(new Vector3(bounds.max.x, bounds.min.y, 0f));
 		//Vector3 minBoundsScreen = Camera.main.WorldToScreenPoint(bounds.min);
         //Vector3 maxBoundsScreen = Camera.main.WorldToScreenPoint(bounds.max);
-        Debug.Log("origin: " + origin.ToString());
-        Debug.Log("extent: " + extent.ToString());
+        //Debug.Log("origin: " + origin.ToString());
+        //Debug.Log("extent: " + extent.ToString());
         float objectWidthScreen = extent.x - origin.x;
         if (screenWidthCm != -1f) {
             float centimetersPerPixel = screenWidthCm / Screen.width;
@@ -648,19 +676,19 @@ public class GameManager : MonoBehaviour
         } else {
             objectWidthCm = -1f;
         }
-        Debug.Log("objectWidthScreen: " + objectWidthScreen + ", Screen.width: " + Screen.width + ", objectWidthCm: " + objectWidthCm);
+        //Debug.Log("objectWidthScreen: " + objectWidthScreen + ", Screen.width: " + Screen.width + ", objectWidthCm: " + objectWidthCm);
     }
 
-    private static void CalculateHeightCm(Bounds bounds)
+    private void CalculateHeightCm(Bounds bounds)
     {
-        Debug.Log("minBounds: " + bounds.min.y);
-        Debug.Log("maxBounds: " + bounds.max.y);
+        //Debug.Log("minBounds: " + bounds.min.y);
+        //Debug.Log("maxBounds: " + bounds.max.y);
         Vector3 origin = Camera.main.WorldToScreenPoint(new Vector3(bounds.max.x, bounds.min.y, 0f));
         Vector3 extent = Camera.main.WorldToScreenPoint(new Vector3(bounds.min.x, bounds.max.y, 0f));
 		//Vector3 minBoundsScreen = Camera.main.WorldToScreenPoint(bounds.min);
         //Vector3 maxBoundsScreen = Camera.main.WorldToScreenPoint(bounds.max);
-        Debug.Log("origin: " + origin.ToString());
-        Debug.Log("extent: " + extent.ToString());
+        //Debug.Log("origin: " + origin.ToString());
+        //Debug.Log("extent: " + extent.ToString());
         float objectHeightScreen = extent.y - origin.y;
         if (screenHeightCm != -1f) {
             float centimetersPerPixel = screenHeightCm / Screen.height;
@@ -668,19 +696,19 @@ public class GameManager : MonoBehaviour
         } else {
             objectHeightCm = -1f;
         }
-        Debug.Log("objectHeightScreen: " + objectHeightScreen + ", screen.height: " + Screen.height + ", objectHeightCm: " + objectHeightCm);
+        //Debug.Log("objectHeightScreen: " + objectHeightScreen + ", screen.height: " + Screen.height + ", objectHeightCm: " + objectHeightCm);
     }
 
-    private static void CalculateDistanceCm(Bounds bounds2, Bounds bounds1)
+    private void CalculateDistanceCm(Bounds bounds2, Bounds bounds1)
     {
-        Debug.Log("minBounds: " + bounds1.max.x);
-        Debug.Log("maxBounds: " + bounds2.min.x);
+        //Debug.Log("minBounds: " + bounds1.max.x);
+        //Debug.Log("maxBounds: " + bounds2.min.x);
         Vector3 origin = Camera.main.WorldToScreenPoint(new Vector3(bounds1.max.x, bounds1.min.y, 0f));
         Vector3 extent = Camera.main.WorldToScreenPoint(new Vector3(bounds2.min.x, bounds2.max.y, 0f));
 		//Vector3 minBoundsScreen = Camera.main.WorldToScreenPoint(bounds.min);
         //Vector3 maxBoundsScreen = Camera.main.WorldToScreenPoint(bounds.max);
-        Debug.Log("origin: " + origin.ToString());
-        Debug.Log("extent: " + extent.ToString());
+        //Debug.Log("origin: " + origin.ToString());
+        //Debug.Log("extent: " + extent.ToString());
         float objectDistanceScreen = extent.x - origin.x;
         if (screenWidthCm != -1f) {
             float centimetersPerPixel = screenWidthCm / Screen.width;
@@ -688,11 +716,11 @@ public class GameManager : MonoBehaviour
         } else {
             objectDistanceCm = -1f;
         }
-        Debug.Log("objectDistanceScreen: " + objectDistanceScreen + ", screen.width: " + Screen.width + ", objectDistanceCm: " + objectDistanceCm);
+        //Debug.Log("objectDistanceScreen: " + objectDistanceScreen + ", screen.width: " + Screen.width + ", objectDistanceCm: " + objectDistanceCm);
     }
 
 
-    private static void PrepareTunnelGame()
+    private void PrepareTunnelGame()
     {
 
         targetAttributes = new Vector4[2];
@@ -754,7 +782,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private static void PrepareGoalGame()
+    private void PrepareGoalGame()
     {
         var tunnelgoalSize = 3;
         targetAttributes = new Vector4[2];
@@ -802,7 +830,7 @@ public class GameManager : MonoBehaviour
         customGameInstructions.text = GameInstructionsTemplate;
     }
 
-    //    private static void PrepareBullseyeGame() {
+    //    private void PrepareBullseyeGame() {
     //
     //		targetAttributes = bullseyeAttributes;
     //
@@ -825,7 +853,7 @@ public class GameManager : MonoBehaviour
     //		}
     //	}
     //
-    //	private static void PrepareLineGame() {
+    //	private void PrepareLineGame() {
     //
     //		targetAttributes = lineAttributes;
     //
