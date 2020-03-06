@@ -9,10 +9,10 @@ using System.Linq;
 
 public enum InputResponders
 {
-    rightHand,
-    leftHand,
     dominantHand,
-    nonDominantHand,
+	nonDominantHand,
+	rightHand,
+    leftHand,
     bothHands,
     head,
     indexFinger,
@@ -29,6 +29,10 @@ public enum InputResponders
 public enum InputType
 {
     mouse,
+	mouseWin,
+	mouseWinPrecis,
+	mouseOSX,
+	mouseOSXPrecis,
 	pressuresensor,
     keyboard,
     touchpad,
