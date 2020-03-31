@@ -59,8 +59,8 @@ public class LoggingManager : MonoBehaviour {
 	public string userID;
 	public string PID;
 	public string TrialNo;
-	public InputResponders inputResponders;
-	public InputType inputType;
+	public string inputResponders;
+	public string inputType;
 
 	private string headers = "UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;TargetsDistance;Timestamp;PID;ObjectWidthCm;ObjectHeightCm;ObjectDistanceCm";
 
@@ -187,8 +187,8 @@ public class LoggingManager : MonoBehaviour {
 		}
 
 		userID = GameObject.Find("ConnectToArduino").GetComponent<ConnectToArduino>().email;
-		inputType = (InputType) inputTypeDropdown.value;
-		inputResponders = (InputResponders) inputResponderDropdown.value;
+		inputType = System.Enum.GetName(typeof(InputType), inputTypeDropdown.value);
+		inputResponders = System.Enum.GetName(typeof(InputResponders), inputResponderDropdown.value);
 	}
 
 	public void PID_Changed() {
@@ -204,12 +204,29 @@ public class LoggingManager : MonoBehaviour {
 	}
 
 	public void onInputType_Changed() {
-		inputType = (InputType) inputTypeDropdown.value;
+		inputType = System.Enum.GetName(typeof(InputType), inputTypeDropdown.value);
+		if ((InputType) inputTypeDropdown.value == InputType.custom) {
+			inputTypeDropdown.gameObject.SetActive(false);
+			inputTypeField.gameObject.SetActive(true);
+		}
+	}
+
+	public void inputTypeField_Changed() {
+		inputType = inputTypeField.text;
 	}
 
 	public void onInputResponder_Changed() {
-		inputResponders = (InputResponders) inputResponderDropdown.value;
+		inputResponders = System.Enum.GetName(typeof(InputResponders), inputResponderDropdown.value);
+		if ((InputResponders) inputResponderDropdown.value == InputResponders.custom) {
+			inputResponderDropdown.gameObject.SetActive(false);
+			inputResponderField.gameObject.SetActive(true);
+		}
 	}
+
+	public void inputResponderField_Changed() {
+		inputResponders = inputResponderField.text;
+	}
+
 	public void NewEntry(GameType gameType, 
 						 string hitType,
 	                     int targetNumber,
@@ -277,8 +294,8 @@ public class LoggingManager : MonoBehaviour {
 
 		logs["Email"].Add(userID.ToString());
 		logs["GameType"].Add(System.Enum.GetName(typeof(GameType), gameType));
-		logs["InputType"].Add(System.Enum.GetName(typeof(InputType), inputType));
-		logs["InputResponders"].Add(System.Enum.GetName(typeof(InputResponders), inputResponders));
+		logs["InputType"].Add(inputType);
+		logs["InputResponders"].Add(inputResponders);
 		logs["HitType"].Add(hitType);
 		logs["TargetNumber"].Add(targetNumber.ToString());
 		logs["TargetID"].Add(targetID.ToString());
