@@ -22,7 +22,8 @@ public enum InputResponders
     body,
     foot,
     knee,
-    wrist
+    wrist,
+	custom
 }
 ;
 
@@ -46,7 +47,8 @@ public enum InputType
     kinect,
     leapMotion,
     novintFalcon,
-    gamePad
+    gamePad,
+	custom
 }
 ;
 
@@ -59,27 +61,21 @@ public class LoggingManager : MonoBehaviour {
 	public string TrialNo;
 	public InputResponders inputResponders;
 	public InputType inputType;
-	
-	public static string _PID;
-	public static string _TrialNo;
-	public static string _userID;
-	public static InputResponders _inputResponders;
-	public static InputType _inputType;
 
-	private static string headers = "UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;TargetsDistance;Timestamp;PID;ObjectWidthCm;ObjectHeightCm;ObjectDistanceCm";
+	private string headers = "UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;TargetsDistance;Timestamp;PID;ObjectWidthCm;ObjectHeightCm;ObjectDistanceCm";
 
-	private static StreamWriter writer;
-	private static string directory;
-	private static string fileName;
-	private static string sep = ";";
-	private static string currentEntry;
+	private StreamWriter writer;
+	private string directory;
+	private string fileName;
+	private string sep = ";";
+	private string currentEntry;
 
-	private static string date;
-	private static string time;
+	private string date;
+	private string time;
 
-	private static Dictionary <string, List<string>> logs;
+	private Dictionary <string, List<string>> logs;
 
-	private static ConnectToMySQL connectToMySQL;
+	private ConnectToMySQL connectToMySQL;
 	// UI
 	[SerializeField]
 	private Dropdown inputResponderDropdown;
@@ -96,11 +92,17 @@ public class LoggingManager : MonoBehaviour {
 	[SerializeField]
 	private InputField TrialNoField;
 
+	[SerializeField]
+	private InputField inputTypeField;
+
+	[SerializeField]
+	private InputField inputResponderField;
+
 	public void Awake() {
 
 		connectToMySQL = FindObjectOfType<ConnectToMySQL>();
-		_PID = "1";
-		_TrialNo = "1";
+		PID = "1";
+		TrialNo = "1";
 		logs = new Dictionary<string, List<string>>() //create a new dictionary
 		
 		{
@@ -184,130 +186,129 @@ public class LoggingManager : MonoBehaviour {
 			Directory.CreateDirectory(directory);
 		}
 
-		_userID = GameObject.Find("ConnectToArduino").GetComponent<ConnectToArduino>().email;
-		_inputType = (InputType) inputTypeDropdown.value;
-		_inputResponders = (InputResponders) inputResponderDropdown.value;
+		userID = GameObject.Find("ConnectToArduino").GetComponent<ConnectToArduino>().email;
+		inputType = (InputType) inputTypeDropdown.value;
+		inputResponders = (InputResponders) inputResponderDropdown.value;
 	}
 
 	public void PID_Changed() {
-		_PID = PIDField.text;
+		PID = PIDField.text;
 	}
 
 	public void Trial_Changed() {
-		_TrialNo = TrialNoField.text;
+		TrialNo = TrialNoField.text;
 	}
 
 	public void emailField_Changed() {
-		_userID = emailField.text;
+		userID = emailField.text;
 	}
 
 	public void onInputType_Changed() {
-		_inputType = (InputType) inputTypeDropdown.value;
+		inputType = (InputType) inputTypeDropdown.value;
 	}
 
 	public void onInputResponder_Changed() {
-		_inputResponders = (InputResponders) inputResponderDropdown.value;
+		inputResponders = (InputResponders) inputResponderDropdown.value;
 	}
-	public void NewEntry(GameType _gameType, 
-
-						 string _hitType,
-	                     int _targetNumber,
-	                     int _targetID, 
-	                     float _sessionTime, 
-	                     float _deltaTime, 
-	                     Vector2 _targetPos, 
-	                     Vector2 _hitPos, 
-	                     float _diameter,
-	                     float _collider,
-	                     Vector2 _outsetTarget, 
-	                     Vector2 _outsetHit,
-						 bool _backtracking,
-						 int _errorTargetID,
-						 int _dDist,
-						 float _objectWidthCm,
-						 float _objectHeightCm,
-						 float _objectDistanceCm) {
+	public void NewEntry(GameType gameType, 
+						 string hitType,
+	                     int targetNumber,
+	                     int targetID, 
+	                     float sessionTime, 
+	                     float deltaTime, 
+	                     Vector2 targetPos, 
+	                     Vector2 hitPos, 
+	                     float diameter,
+	                     float collider,
+	                     Vector2 outsetTarget, 
+	                     Vector2 outsetHit,
+						 bool backtracking,
+						 int errorTargetID,
+						 int dDist,
+						 float objectWidthCm,
+						 float objectHeightCm,
+						 float objectDistanceCm) {
 
 		date = System.DateTime.Now.ToString("yyyy-MM-dd");
 		time = System.DateTime.Now.ToString("HH:mm:ss:ffff");
 		string dateId = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffff");
 
 
-		currentEntry = 	_userID + sep +
-                        _gameType + sep +
-                        _inputType + sep +
-                        _inputResponders + sep +
-						_hitType + sep +
-						_targetNumber + sep +
-						_targetID + sep +
-						_sessionTime + sep +
-						_deltaTime + sep +
-						_targetPos.x + sep +
-						_targetPos.y + sep +
-						_hitPos.x + sep +
-						_hitPos.y + sep +
-						(_hitPos.x - _targetPos.x) + sep +
-						(_hitPos.y - _targetPos.y) + sep +
-						_outsetTarget.x + sep +
-						_outsetTarget.y + sep +
-						(_targetPos.x - _outsetTarget.x) + sep +
-						(_targetPos.y - _outsetTarget.y) + sep +
-						_outsetHit.x + sep +
-						_outsetHit.y + sep +
-						(_hitPos.x - _outsetHit.x) + sep +
-						(_hitPos.x - _outsetHit.y) + sep +
-						_diameter + sep +
-						_collider + sep +
-						_backtracking + sep +
-						_errorTargetID + sep +
-						_dDist + sep +
+		currentEntry = 	userID + sep +
+                        gameType + sep +
+                        inputType + sep +
+                        inputResponders + sep +
+						hitType + sep +
+						targetNumber + sep +
+						targetID + sep +
+						sessionTime + sep +
+						deltaTime + sep +
+						targetPos.x + sep +
+						targetPos.y + sep +
+						hitPos.x + sep +
+						hitPos.y + sep +
+						(hitPos.x - targetPos.x) + sep +
+						(hitPos.y - targetPos.y) + sep +
+						outsetTarget.x + sep +
+						outsetTarget.y + sep +
+						(targetPos.x - outsetTarget.x) + sep +
+						(targetPos.y - outsetTarget.y) + sep +
+						outsetHit.x + sep +
+						outsetHit.y + sep +
+						(hitPos.x - outsetHit.x) + sep +
+						(hitPos.x - outsetHit.y) + sep +
+						diameter + sep +
+						collider + sep +
+						backtracking + sep +
+						errorTargetID + sep +
+						dDist + sep +
 						dateId + sep +
-						_PID + sep +
-						_objectWidthCm + sep +
-						_objectHeightCm + sep +
-						_objectDistanceCm;
+						PID + sep +
+						objectWidthCm + sep +
+						objectHeightCm + sep +
+						objectDistanceCm;
 
 		using (StreamWriter writer = File.AppendText(directory + fileName))
 		{
 			writer.WriteLine(currentEntry);
 		}
 
-		string b = System.Enum.GetName(typeof(GameType), _gameType);         //To Get the name of the enumerator
+		string b = System.Enum.GetName(typeof(GameType), gameType);         //To Get the name of the enumerator
 
-		logs["Email"].Add(_userID.ToString());
-		logs["GameType"].Add(System.Enum.GetName(typeof(GameType), _gameType));
-		logs["InputType"].Add(System.Enum.GetName(typeof(InputType), _inputType));
-		logs["InputResponders"].Add(System.Enum.GetName(typeof(InputResponders), _inputResponders));
-		logs["HitType"].Add(_hitType);
-		logs["TargetNumber"].Add(_targetNumber.ToString());
-		logs["TargetID"].Add(_targetID.ToString());
-		logs["SessionTime"].Add(_sessionTime.ToString().Replace(',', '.'));
-		logs["DeltaTime"].Add(_deltaTime.ToString().Replace(',', '.'));
-		logs["TargetX"].Add(_targetPos.x.ToString().Replace(',', '.'));
-		logs["TargetY"].Add(_targetPos.y.ToString().Replace(',', '.'));
-		logs["HitX"].Add(_hitPos.x.ToString().Replace(',', '.'));
-		logs["HitY"].Add(_hitPos.y.ToString().Replace(',', '.'));
-		logs["HitOffsetX"].Add(_hitPos.x.ToString().Replace(',', '.'));
-		logs["HitOffsetY"].Add(_hitPos.y.ToString().Replace(',', '.'));
-		logs["OutsetTargetX"].Add(_outsetTarget.x.ToString().Replace(',', '.'));
-		logs["OutsetTargetY"].Add(_outsetTarget.y.ToString().Replace(',', '.'));
-		logs["TargetDeltaX"].Add(_targetPos.x.ToString().Replace(',', '.'));
-		logs["TargetDeltaY"].Add(_targetPos.y.ToString().Replace(',', '.'));
-		logs["OutsetHitX"].Add(_outsetHit.x.ToString().Replace(',', '.'));
-		logs["OutsetHitY"].Add(_outsetHit.y.ToString().Replace(',', '.'));
-		logs["DeltaHitX"].Add(_hitPos.x.ToString().Replace(',', '.'));
-		logs["DeltaHitY"].Add(_hitPos.y.ToString().Replace(',', '.'));
-		logs["TargetDiameter"].Add(_diameter.ToString().Replace(',', '.'));
-		logs["ColliderDiameter"].Add(_diameter.ToString().Replace(',', '.'));
-		logs["Backtracking"].Add(_backtracking.ToString());
-		logs["ErrorTargetID"].Add(_errorTargetID.ToString());
-		logs["TargetsDistance"].Add(_dDist.ToString().Replace(',', '.'));
+		logs["Email"].Add(userID.ToString());
+		logs["GameType"].Add(System.Enum.GetName(typeof(GameType), gameType));
+		logs["InputType"].Add(System.Enum.GetName(typeof(InputType), inputType));
+		logs["InputResponders"].Add(System.Enum.GetName(typeof(InputResponders), inputResponders));
+		logs["HitType"].Add(hitType);
+		logs["TargetNumber"].Add(targetNumber.ToString());
+		logs["TargetID"].Add(targetID.ToString());
+		logs["SessionTime"].Add(sessionTime.ToString().Replace(',', '.'));
+		logs["DeltaTime"].Add(deltaTime.ToString().Replace(',', '.'));
+		logs["TargetX"].Add(targetPos.x.ToString().Replace(',', '.'));
+		logs["TargetY"].Add(targetPos.y.ToString().Replace(',', '.'));
+		logs["HitX"].Add(hitPos.x.ToString().Replace(',', '.'));
+		logs["HitY"].Add(hitPos.y.ToString().Replace(',', '.'));
+		logs["HitOffsetX"].Add(hitPos.x.ToString().Replace(',', '.'));
+		logs["HitOffsetY"].Add(hitPos.y.ToString().Replace(',', '.'));
+		logs["OutsetTargetX"].Add(outsetTarget.x.ToString().Replace(',', '.'));
+		logs["OutsetTargetY"].Add(outsetTarget.y.ToString().Replace(',', '.'));
+		logs["TargetDeltaX"].Add(targetPos.x.ToString().Replace(',', '.'));
+		logs["TargetDeltaY"].Add(targetPos.y.ToString().Replace(',', '.'));
+		logs["OutsetHitX"].Add(outsetHit.x.ToString().Replace(',', '.'));
+		logs["OutsetHitY"].Add(outsetHit.y.ToString().Replace(',', '.'));
+		logs["DeltaHitX"].Add(hitPos.x.ToString().Replace(',', '.'));
+		logs["DeltaHitY"].Add(hitPos.y.ToString().Replace(',', '.'));
+		logs["TargetDiameter"].Add(diameter.ToString().Replace(',', '.'));
+		logs["ColliderDiameter"].Add(diameter.ToString().Replace(',', '.'));
+		logs["Backtracking"].Add(backtracking.ToString());
+		logs["ErrorTargetID"].Add(errorTargetID.ToString());
+		logs["TargetsDistance"].Add(dDist.ToString().Replace(',', '.'));
 		logs["Timestamp"].Add(dateId.ToString().Replace(',', '.'));
-		logs["PID"].Add(_PID.ToString());
-		logs["ObjectWidthCm"].Add(_objectWidthCm.ToString().Replace(',', '.'));
-		logs["ObjectHeightCm"].Add(_objectHeightCm.ToString().Replace(',', '.'));
-		logs["ObjectDistanceCm"].Add(_objectDistanceCm.ToString().Replace(',', '.'));
-		logs["TrialNo"].Add(_TrialNo.ToString());
+		logs["PID"].Add(PID.ToString());
+		logs["ObjectWidthCm"].Add(objectWidthCm.ToString().Replace(',', '.'));
+		logs["ObjectHeightCm"].Add(objectHeightCm.ToString().Replace(',', '.'));
+		logs["ObjectDistanceCm"].Add(objectDistanceCm.ToString().Replace(',', '.'));
+		logs["TrialNo"].Add(TrialNo.ToString());
 
 		
 		}
