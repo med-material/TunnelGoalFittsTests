@@ -70,7 +70,7 @@ public class InputManager : MonoBehaviour {
 		}
 		else if(SystemInfo.deviceType == DeviceType.Desktop) {
 
-			CheckPressure();
+			CheckMouseInput();
 		}
 
 
