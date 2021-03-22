@@ -62,7 +62,10 @@ public class FittsTarget : Target
 
     public void SetSize(int width, int height)
     {
-        this.transform.localScale = new Vector3(width, height, 1);
+        // For Fitts game we use a power function to manipulate size of objects.
+        // 0.1 x ^ 1.3
+        // This is to allow us to go to very small sizes for human device resolutions purposes.
+        this.transform.localScale = new Vector3(0.1f * Mathf.Pow(width,1.3f), height, 1);
     }
 
     private void PlayFeedback()
