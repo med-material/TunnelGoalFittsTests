@@ -58,6 +58,7 @@ public class LoggingManager : MonoBehaviour {
 
 	public string userID;
 	public string PID;
+	public string cdgain;
 	public string TrialNo;
 	public string inputResponders;
 	public string inputType;
@@ -90,6 +91,9 @@ public class LoggingManager : MonoBehaviour {
 	private InputField PIDField;
 
 	[SerializeField]
+	private InputField cdgainField;
+
+	[SerializeField]
 	private InputField TrialNoField;
 
 	[SerializeField]
@@ -103,6 +107,7 @@ public class LoggingManager : MonoBehaviour {
 		connectToMySQL = FindObjectOfType<ConnectToMySQL>();
 		PID = "1";
 		TrialNo = "1";
+		cdgain = "NULL";
 		logs = new Dictionary<string, List<string>>() //create a new dictionary
 		
 		{
@@ -139,7 +144,8 @@ public class LoggingManager : MonoBehaviour {
 			{"ObjectWidthCm", new List<string>()},
 			{"ObjectHeightCm", new List<string>()},
 			{"ObjectDistanceCm", new List<string>()},
-			{"TrialNo", new List<string>()}
+			{"TrialNo", new List<string>()},
+			{"CDGain", new List<string>()}
 		}; 
 
 		var optionsList = Enum.GetNames(typeof(InputResponders)).ToList();
@@ -168,13 +174,13 @@ public class LoggingManager : MonoBehaviour {
 			print ("Windows");
 		}
 		else if(Application.platform == RuntimePlatform.LinuxPlayer || Application.platform == RuntimePlatform.LinuxEditor) {
-			directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/rtii/" + "tunnelgoalfitts" + "/";
+			directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "\\rtii\\" + "tunnelgoalfitts" + "\\";
 			print("Linux");
 		} else if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer) {
-			directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/rtii/" + "tunnelgoalfitts" + "/";
+			directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "\\rtii\\" + "tunnelgoalfitts" + "\\";
 			print("Mac OSX");
 		} else {
-            directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/rtii/" + "tunnelgoalfitts" + "/";
+            directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "\\rtii\\" + "tunnelgoalfitts" + "\\";
             print("Unknown");
 		}
 /*
@@ -193,10 +199,23 @@ public class LoggingManager : MonoBehaviour {
 
 	public void PID_Changed() {
 		PID = PIDField.text;
+		if (PID == "") {
+			PID = "1";
+		}
+	}
+
+	public void CDGain_Changed() {
+		cdgain = cdgainField.text;
+		if (cdgain == "") {
+			cdgain = "NULL";
+		}
 	}
 
 	public void Trial_Changed() {
 		TrialNo = TrialNoField.text;
+		if (TrialNo == "") {
+			TrialNo = "NULL";
+		}
 	}
 
 	public void emailField_Changed() {
@@ -283,8 +302,9 @@ public class LoggingManager : MonoBehaviour {
 						PID + sep +
 						objectWidthCm + sep +
 						objectHeightCm + sep +
-						objectDistanceCm;
-
+						objectDistanceCm + sep +
+						cdgain;
+		Debug.Log(directory + fileName);
 		using (StreamWriter writer = File.AppendText(directory + fileName))
 		{
 			writer.WriteLine(currentEntry);
@@ -326,6 +346,7 @@ public class LoggingManager : MonoBehaviour {
 		logs["ObjectHeightCm"].Add(objectHeightCm.ToString().Replace(',', '.'));
 		logs["ObjectDistanceCm"].Add(objectDistanceCm.ToString().Replace(',', '.'));
 		logs["TrialNo"].Add(TrialNo.ToString());
+		logs["CDGain"].Add(cdgain.ToString());
 
 		
 		}

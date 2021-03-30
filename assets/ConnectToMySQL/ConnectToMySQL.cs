@@ -235,6 +235,8 @@ public class ConnectToMySQL : MonoBehaviour {
 				} else if (logCollection[key][i].Contains("\"")) {
 					Debug.LogWarning("Value " + logCollection[key] + "from column " + key + "contains quotation mark (\"). It has been replaced with a dash.");
 					logCollection[key][i].Replace('\"', '-');
+				} else if (logCollection[key][i] == "") {
+					logCollection[key][i] = "NULL";
 				}
 				row.Add(logCollection[key][i]);
 			}
