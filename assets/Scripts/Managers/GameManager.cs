@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
     public int _S_goal;
     public int _rounds;
 
+    public float _cdgain;
     public float _targetWidthCm;
     public float _targetDistanceCm;
     public float _screenWidthCm;
@@ -61,6 +62,7 @@ public class GameManager : MonoBehaviour
     private GameObject tunnelBarPrefab;
 
     private int rounds;
+    private float cdgain;
     private float targetWidthCm;
     private float targetDistanceCm;
     private float screenWidthCm;
@@ -115,8 +117,6 @@ public class GameManager : MonoBehaviour
     private Text distanceNumber;
     [SerializeField]
     private Text roundsNumber;
-    [SerializeField]
-    private Slider roundsSlider;
 
     [SerializeField]
     private InputField screenWidthinput;
@@ -169,6 +169,7 @@ public class GameManager : MonoBehaviour
         rounds = _rounds;
         targetWidthCm = _targetWidthCm;
         targetDistanceCm = _targetDistanceCm;
+        cdgain = _cdgain;
         successClip = _successClip;
         errorClip = _errorClip;
         missClip = _missClip;
@@ -203,7 +204,6 @@ public class GameManager : MonoBehaviour
         D_fitts = (int) distanceSlider.value;
         D_goal = (int) distanceSlider.value;
         D_tunnel = (int) distanceSlider.value;
-        rounds = (int) roundsSlider.value;
 
         screenWidthCm = (Screen.width / Screen.dpi) * 2.54f;
 		Debug.Log("width: " + Screen.width + ", dpi:" + Screen.dpi + ", widthCm: " +screenWidthCm);
@@ -311,9 +311,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void rounds_onSliderChanged() {
-        roundsNumber.text = ((int)roundsSlider.value).ToString();
-        rounds = (int)roundsSlider.value;
+    public void rounds_onInputChanged(string text) {
+        rounds = int.Parse(text);
     }
 
     public bool GetInGame()
