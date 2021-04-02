@@ -174,13 +174,13 @@ public class LoggingManager : MonoBehaviour {
 			print ("Windows");
 		}
 		else if(Application.platform == RuntimePlatform.LinuxPlayer || Application.platform == RuntimePlatform.LinuxEditor) {
-			directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "\\rtii\\" + "tunnelgoalfitts" + "\\";
+			directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/rtii/tunnelgoalfitts/";
 			print("Linux");
 		} else if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer) {
-			directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "\\rtii\\" + "tunnelgoalfitts" + "\\";
+			directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/rtii/tunnelgoalfitts/";
 			print("Mac OSX");
 		} else {
-            directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "\\rtii\\" + "tunnelgoalfitts" + "\\";
+            directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/rtii/tunnelgoalfitts/";
             print("Unknown");
 		}
 /*
