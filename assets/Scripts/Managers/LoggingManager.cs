@@ -62,6 +62,7 @@ public class LoggingManager : MonoBehaviour {
 	public string TrialNo;
 	public string inputResponders;
 	public string inputType;
+	private string sessionID;
 
 	private string headers = "UserID;GameType;InputType;InputResponders;HitType;TargetNumber;TargetID;SessionTime;DeltaTime;TargetX;TargetY;HitX;HitY;HitOffsetX;HitOffsetY;OutsetTargetX;OutsetTargetY;TargetDeltaX;TargetDeltaY;OutsetHitX;OutsetHitY;DeltaHitX;DeltaHitY;TargetDiameter;ColliderDiameter;Backtracking;ErrorTargetID;TargetsDistance;Timestamp;PID;ObjectWidthCm;ObjectHeightCm;ObjectDistanceCm";
 
@@ -108,10 +109,13 @@ public class LoggingManager : MonoBehaviour {
 		PID = "1";
 		TrialNo = "1";
 		cdgain = "NULL";
+		sessionID = Guid.NewGuid().ToString();
 		logs = new Dictionary<string, List<string>>() //create a new dictionary
 		
 		{
+			{"SessionID", new List<string>()},
 			{"Email", new List<string>()},
+			{"Framecount", new List<string>()},
 			{"GameType", new List<string>()},
 			{"InputType", new List<string>()},
 			{"InputResponders", new List<string>()},
@@ -313,6 +317,8 @@ public class LoggingManager : MonoBehaviour {
 		string b = System.Enum.GetName(typeof(GameType), gameType);         //To Get the name of the enumerator
 
 		logs["Email"].Add(userID.ToString());
+		logs["SessionID"].Add(sessionID.ToString());
+		logs["Framecount"].Add(Time.frameCount == 0 ? "-1" : Time.frameCount.ToString());
 		logs["GameType"].Add(System.Enum.GetName(typeof(GameType), gameType));
 		logs["InputType"].Add(inputType);
 		logs["InputResponders"].Add(inputResponders);
