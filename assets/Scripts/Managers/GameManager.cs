@@ -303,7 +303,6 @@ public class GameManager : MonoBehaviour
     }
 
     public void distance_onSliderChanged() {
-        distanceNumber.text = (objectDistanceCm).ToString("0.0") + " cm";
         if (gameType == GameType.Fitts) {
             D_fitts = (int) distanceSlider.value;
             PrepareFittsGame();
@@ -314,6 +313,7 @@ public class GameManager : MonoBehaviour
             D_tunnel = (int) distanceSlider.value;
             PrepareTunnelGame();
         }
+        distanceNumber.text = (objectDistanceCm).ToString("0.0") + " cm";
     }
 
     public void rounds_onInputChanged(string text) {
