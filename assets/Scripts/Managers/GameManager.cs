@@ -211,6 +211,8 @@ public class GameManager : MonoBehaviour
 		Debug.Log("height: " + Screen.height + ", dpi:" + Screen.dpi + ", heightCm: " +screenHeightCm);
         screenWidthinput.text = screenWidthCm.ToString("0.00");
         screenHeightInput.text = screenHeightCm.ToString("0.00"); 
+        size_onSliderChanged();
+        distance_onSliderChanged();
 
         PrepareGoalGame();
     }
