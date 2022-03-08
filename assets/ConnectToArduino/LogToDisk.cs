@@ -43,7 +43,7 @@ public class LogToDisk : MonoBehaviour
 		if (string.IsNullOrEmpty(customFilepath)) {
 
 			if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor) {
-				directory = "C:\\rtii\\" + identifier + "\\";
+				directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "/rtii/" + identifier + "/";
 				print ("Windows");
 			}
 			else if(Application.platform == RuntimePlatform.LinuxPlayer || Application.platform == RuntimePlatform.LinuxEditor) {
