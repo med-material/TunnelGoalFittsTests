@@ -290,17 +290,20 @@ public class GameManager : MonoBehaviour
         if (gameType == GameType.Fitts) {
             S_fitts = (int) sizeSlider.value;
             PrepareFittsGame();
+            sizeNumber.text = (objectWidthCm).ToString("0.0") + "cm";
         } else if (gameType == GameType.Goal) {
             S_goal = (int) sizeSlider.value;
             PrepareGoalGame();
+            sizeNumber.text = (objectHeightCm).ToString("0.0") + "cm";
         } else if (gameType == GameType.Tunnel) {
             S_tunnel = (int) sizeSlider.value;
             PrepareTunnelGame();
+            sizeNumber.text = (objectHeightCm).ToString("0.0") + "cm";
         }
     }
 
     public void distance_onSliderChanged() {
-        distanceNumber.text = ((int)distanceSlider.value).ToString();
+        distanceNumber.text = (objectDistanceCm).ToString("0.0") + " cm";
         if (gameType == GameType.Fitts) {
             D_fitts = (int) distanceSlider.value;
             PrepareFittsGame();
