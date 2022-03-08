@@ -63,13 +63,13 @@ public class GameManager : MonoBehaviour
 
     private int rounds;
     private float cdgain;
-    private float targetWidthCm;
-    private float targetDistanceCm;
-    private float screenWidthCm;
-    private float screenHeightCm;
-    private float objectWidthCm;
-    private float objectHeightCm;
-    private float objectDistanceCm;
+    private double targetWidthCm;
+    private double targetDistanceCm;
+    private double screenWidthCm;
+    private double screenHeightCm;
+    private double objectWidthCm;
+    private double objectHeightCm;
+    private double objectDistanceCm;
 
     private Vector4[] targetAttributes;
     private AudioClip successClip;
@@ -613,9 +613,9 @@ public class GameManager : MonoBehaviour
             backtracking,
             errorTargetID,
             dist,
-            objectWidthCm,
-            objectHeightCm,
-            objectDistanceCm);
+            (float)objectWidthCm,
+            (float)objectHeightCm,
+            (float)objectDistanceCm);
     }
 
     private void PrepareFittsGame()
@@ -676,9 +676,9 @@ public class GameManager : MonoBehaviour
         //Vector3 maxBoundsScreen = Camera.main.WorldToScreenPoint(bounds.max);
         //Debug.Log("origin: " + origin.ToString());
         //Debug.Log("extent: " + extent.ToString());
-        float objectWidthScreen = extent.x - origin.x;
+        double objectWidthScreen = extent.x - origin.x;
         if (screenWidthCm != -1f) {
-            float centimetersPerPixel = screenWidthCm / Screen.width;
+            double centimetersPerPixel = screenWidthCm / Screen.width;
             objectWidthCm = objectWidthScreen * centimetersPerPixel;
         } else {
             objectWidthCm = -1f;
@@ -696,9 +696,9 @@ public class GameManager : MonoBehaviour
         //Vector3 maxBoundsScreen = Camera.main.WorldToScreenPoint(bounds.max);
         //Debug.Log("origin: " + origin.ToString());
         //Debug.Log("extent: " + extent.ToString());
-        float objectHeightScreen = extent.y - origin.y;
+        double objectHeightScreen = extent.y - origin.y;
         if (screenHeightCm != -1f) {
-            float centimetersPerPixel = screenHeightCm / Screen.height;
+            double centimetersPerPixel = screenHeightCm / Screen.height;
             objectHeightCm = objectHeightScreen * centimetersPerPixel;
         } else {
             objectHeightCm = -1f;
@@ -716,9 +716,9 @@ public class GameManager : MonoBehaviour
         //Vector3 maxBoundsScreen = Camera.main.WorldToScreenPoint(bounds.max);
         //Debug.Log("origin: " + origin.ToString());
         //Debug.Log("extent: " + extent.ToString());
-        float objectDistanceScreen = extent.x - origin.x;
+        double objectDistanceScreen = (double)extent.x - (double)origin.x;
         if (screenWidthCm != -1f) {
-            float centimetersPerPixel = screenWidthCm / Screen.width;
+            double centimetersPerPixel = screenWidthCm / Screen.width;
             objectDistanceCm = objectDistanceScreen * centimetersPerPixel;
         } else {
             objectDistanceCm = -1f;
