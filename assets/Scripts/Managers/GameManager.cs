@@ -624,12 +624,12 @@ public class GameManager : MonoBehaviour
         // 0.1 x ^ 1.3
         // This is to allow us to go to very small sizes for human device resolutions purposes.
         targetAttributes = new Vector4[2];
-        targetAttributes[0].x = ((D_fitts / 2) + (0.1f * Mathf.Pow(S_fitts,1.3f) / 2));
+        targetAttributes[0].x = (((float)D_fitts / 2));
         targetAttributes[0].y = 0;
         targetAttributes[0].z = (0.1f * Mathf.Pow(S_fitts,1.3f));
         targetAttributes[0].w = 100;
 
-        targetAttributes[1].x = -((D_fitts / 2) + (0.1f * Mathf.Pow(S_fitts,1.3f) / 2));
+        targetAttributes[1].x = -(((float)D_fitts / 2));
         targetAttributes[1].y = 0;
         targetAttributes[1].z = (0.1f * Mathf.Pow(S_fitts,1.3f));
         targetAttributes[1].w = 100;
@@ -732,12 +732,12 @@ public class GameManager : MonoBehaviour
 
         targetAttributes = new Vector4[2];
         var tunnelgoalSize = 3;
-        targetAttributes[0].x = ((D_tunnel / 2) + (tunnelgoalSize / 2));
+        targetAttributes[0].x = (((float)D_tunnel / 2) + (tunnelgoalSize / 2));
         targetAttributes[0].y = 0;
         targetAttributes[0].z = 10;
         targetAttributes[0].w = 100;
 
-        targetAttributes[1].x = -((D_tunnel / 2) + (tunnelgoalSize / 2));
+        targetAttributes[1].x = -(((float)D_tunnel / 2) + (tunnelgoalSize / 2));
         targetAttributes[1].y = 0;
         targetAttributes[1].z = 10;
         targetAttributes[1].w = 100;
@@ -793,12 +793,12 @@ public class GameManager : MonoBehaviour
     {
         var tunnelgoalSize = 3;
         targetAttributes = new Vector4[2];
-        targetAttributes[0].x = ((D_goal / 2) + (tunnelgoalSize / 2));
+        targetAttributes[0].x = (((float)D_goal / 2) + (tunnelgoalSize / 2));
         targetAttributes[0].y = 0;
         targetAttributes[0].z = S_goal;
         targetAttributes[0].w = 100;
 
-        targetAttributes[1].x = -((D_goal / 2) + (tunnelgoalSize / 2));
+        targetAttributes[1].x = -(((float)D_goal / 2) + (tunnelgoalSize / 2));
         targetAttributes[1].y = 0;
         targetAttributes[1].z = S_goal;
         targetAttributes[1].w = 100;
