@@ -28,6 +28,7 @@ public class FittsTarget : Target
         gameManager = GameObject.Find("Managers").GetComponent<GameManager>();
         sprite = this.GetComponent<SpriteRenderer>();
         sprite.color = inactiveColor;
+        this.GetComponent<BoxCollider2D>().enabled = false;
     }
 
     void Update()
@@ -45,6 +46,7 @@ public class FittsTarget : Target
     public new void SetActiveTarget()
     {
         sprite.color = activeColor;
+        this.GetComponent<BoxCollider2D>().enabled = true;
     }
 
     public void Hit()
@@ -74,6 +76,7 @@ public class FittsTarget : Target
         hitTime = Time.time;
 
         sprite.color = feedbackColor;
+        this.GetComponent<BoxCollider2D>().enabled = false;
     }
 
 }
