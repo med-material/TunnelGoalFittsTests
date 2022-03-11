@@ -710,8 +710,8 @@ public class GameManager : MonoBehaviour
     {
         //Debug.Log("minBounds: " + bounds1.max.x);
         //Debug.Log("maxBounds: " + bounds2.min.x);
-        Vector3 origin = Camera.main.WorldToScreenPoint(new Vector3(bounds1.max.x, bounds1.min.y, 0f));
-        Vector3 extent = Camera.main.WorldToScreenPoint(new Vector3(bounds2.min.x, bounds2.max.y, 0f));
+        Vector3 origin = Camera.main.WorldToScreenPoint(new Vector3(bounds1.center.x, bounds1.center.y, 0f));
+        Vector3 extent = Camera.main.WorldToScreenPoint(new Vector3(bounds2.center.x, bounds2.center.y, 0f));
 		//Vector3 minBoundsScreen = Camera.main.WorldToScreenPoint(bounds.min);
         //Vector3 maxBoundsScreen = Camera.main.WorldToScreenPoint(bounds.max);
         //Debug.Log("origin: " + origin.ToString());
