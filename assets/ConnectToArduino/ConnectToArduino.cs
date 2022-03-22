@@ -57,8 +57,15 @@ public class ConnectToArduino : MonoBehaviour
     {
         eventSystem = EventSystem.current;
         string[] ports = SerialPort.GetPortNames();
-        if (ports.Length > 0) {
-            arduinoDropdown.AddOptions(ports.ToList());
+        if (ports != null && ports.Length > 0) {
+            if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer) {
+                foreach (string port in ports) {
+                    string p = port.Replace("/dev/tty","/dev/cu");
+                    arduinoDropdown.AddOptions(new List<string> { p});
+                }
+            } else {
+                arduinoDropdown.AddOptions(ports.ToList());
+            }
             arduinoDropdown.AddOptions(new List<string> {"Custom.."});
             serialPortInputField.text = arduinoDropdown.options[arduinoDropdown.value].text;
         } else {
