@@ -8,6 +8,8 @@ using System.IO.Ports;
 using System.Text.RegularExpressions;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using System;
+
 public class ConnectToArduino : MonoBehaviour
 {
     [SerializeField]
@@ -43,8 +45,10 @@ public class ConnectToArduino : MonoBehaviour
     private float connectTimer = 0f;
     private float connectTimeout = 3f;
     private bool connectingToArduino = false;
+    private string arduinoError = "";
 
     public string email;
+
 
     private EventSystem eventSystem;
 	private static SerialPort serialport;
@@ -86,7 +90,7 @@ public class ConnectToArduino : MonoBehaviour
         if (connectingToArduino) {
             connectTimer += Time.deltaTime;
             if (connectTimer > connectTimeout) {
-                displayArduinoError();
+                displayArduinoError("Connection Time Out");
             }
         }
     }
@@ -109,9 +113,10 @@ public class ConnectToArduino : MonoBehaviour
             SceneManager.LoadSceneAsync(redirectScene);
     }
 
-    private void displayArduinoError() {
+    private void displayArduinoError(string text = "") {
         connectStatus.text = "Could not connect to Arduino on port: " + sanitizedSerialPort;
         connectStatus.text += '\n' + "(Is the Arduino Monitor open?)";
+        //connectStatus.text += '\n' + "(" + text + ")"; // use this if the disconnection does not work for unknown reasons.
         connectStatus.color = errorColor;
         serialPortInputField.image.color = inputfieldErrorColor;
         connectingToArduino = false;
@@ -175,7 +180,7 @@ public class ConnectToArduino : MonoBehaviour
             CloseConnection();
             RedirectToScene();
         } else {
-            displayArduinoError();
+            displayArduinoError(arduinoError);
         }
     }
 
@@ -197,12 +202,19 @@ public class ConnectToArduino : MonoBehaviour
 			}
 			else
 			{
-				//Open the connection to read data
-				serialport.Open();
-				//Set time-out value before reporting error
-				serialport.ReadTimeout = 100;
-				Debug.Log("Connected to Arduino, on port: " + serialport.PortName);
-				return true;
+                try {
+                    //Open the connection to read data
+                    serialport.Open();
+                    //Set time-out value before reporting error
+                    serialport.ReadTimeout = 100;
+                    Debug.Log("Connected to Arduino, on port: " + serialport.PortName);
+                    return true;
+                }
+                catch (Exception e) {
+                    arduinoError = e.ToString();
+                }
+				
+                
 			}
 		}
 		return false;
