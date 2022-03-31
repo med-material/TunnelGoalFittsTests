@@ -79,9 +79,11 @@ public class InputManager : MonoBehaviour {
 	private void CheckMouseInput() {
 
 	
-        if (Input.GetMouseButtonDown(0) && gameManager.GetGameType() == GameType.Fitts)
+        if (Input.GetMouseButtonDown(0) && gameManager.GetGameType() == GameType.Fitts) {
             CheckHit(cursor.GetScreenPosition());
-        else if (gameManager.GetGameType() == GameType.Goal)
+		} else if (Input.GetKeyDown(KeyCode.Space) && gameManager.GetGameType() == GameType.Fitts) {
+            CheckHit(cursor.GetScreenPosition());
+		} else if (gameManager.GetGameType() == GameType.Goal)
         {
                 CheckCrossing(cursor.GetScreenPosition());
         }

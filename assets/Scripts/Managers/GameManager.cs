@@ -334,7 +334,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        cursor.gameObject.SetActive(true);
+        cursor.Enable();
         cursor.ResetPosition();
         if (gameType == GameType.Fitts)
             PrepareFittsGame();
@@ -383,7 +383,7 @@ public class GameManager : MonoBehaviour
 
     public void EndGame()
     {
-        cursor.gameObject.SetActive(false);
+        cursor.Disable();
         inGame = false;
         //startButton.Appear();
         for (int i = 0; i < allTargetObjects.Length; i++)
